@@ -1,0 +1,14 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Main Scenes/Test_RagDolls.unity
+    guid: 5f773ea780b50a2428718241249466e4
+  - enabled: 0
+    path: Assets/Main Scenes/UI_MainMenu.unity
+    guid: c460605158ae18341a3915ad9805c42f
+  m_configObjects: {}
