@@ -44,8 +44,11 @@ public class PlayerController2 : NetworkBehaviour
 
     bool isGrounded;
     bool isDead = false;
-
+    public float maxHealth = 100f;
+    private NetworkVariable<float> currentHealth = new NetworkVariable<float>(); 
+    
     float horizontal, vertical;
+   
 
     [SerializeField] ConfigurableJoint[] cjs;
     JointDrive[] jds;
@@ -71,6 +74,7 @@ public class PlayerController2 : NetworkBehaviour
         {
             InitializeComponents();
         }
+        currentHealth.Value = maxHealth;
     }
 
     void InitializeComponents()
@@ -218,6 +222,19 @@ public class PlayerController2 : NetworkBehaviour
 
     }
 
+    public void ApplyDamage(float damage)
+    {
+        if (IsServer)
+        {
+            currentHealth.Value -= damage;
+            if (currentHealth.Value <= 0f)
+            {
+                Die(respawn:true);
+            }
+        }
+    }
+    
+    
     public void Die(bool respawn)
     {
         foreach (ConfigurableJoint cj in cjs)
