@@ -1239,7 +1239,7 @@ GameObject:
   - component: {fileID: 6026067335661735497}
   - component: {fileID: 4625123683008241530}
   - component: {fileID: 1215279760487401451}
-  m_Layer: 8
+  m_Layer: 6
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4031,7 +4031,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5013825969635327834}
-  m_Layer: 8
+  m_Layer: 6
   m_Name: Head_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4176,7 +4176,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   whatIsGrappleable:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 72
   gunTip: {fileID: 337091484484173890}
   camera: {fileID: 6041038437426052484}
   player: {fileID: 901071938507271435}
@@ -5359,7 +5359,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 387139490566626651}
-  m_Layer: 8
+  m_Layer: 6
   m_Name: CameraPositionHint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
