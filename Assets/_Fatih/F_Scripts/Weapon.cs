@@ -61,6 +61,7 @@ public class Weapon : NetworkBehaviour
         if (IsOwner && playerCanShoot)
         {
             SwitchWeapon();
+            weaponManager.TextBulletCount(_bullet, spareBullet);
         }
 
         if (_bullet != magazineBullet && !reloading && spareBullet > 0 && (Input.GetKeyDown(KeyCode.R) || _bullet <= 0))
@@ -77,24 +78,24 @@ public class Weapon : NetworkBehaviour
         }
     }
 
-    private void LateUpdate()
-    {
-        if (IsOwner && Input.GetKey(KeyCode.Mouse0) && playerShoots && !reloading)
-        {
-            if (_bullet > 0)
-            {
-                Vector3 quaRot = new(0f, weaponManager.recoilVectorList[currentRecoilIndex].x * 1f,
-                    weaponManager.recoilVectorList[currentRecoilIndex].y * -1f);
-                Quaternion spreadRotation = Quaternion.Euler(quaRot);
+    //private void LateUpdate()
+    //{
+    //    if (IsOwner && Input.GetKey(KeyCode.Mouse0) && playerShoots && !reloading)
+    //    {
+    //        if (_bullet > 0)
+    //        {
+    //            Vector3 quaRot = new(0f, weaponManager.recoilVectorList[currentRecoilIndex].x * 1f,
+    //                weaponManager.recoilVectorList[currentRecoilIndex].y * -1f);
+    //            Quaternion spreadRotation = Quaternion.Euler(quaRot);
 
-                transform.localRotation = Quaternion.Slerp(transform.localRotation, transform.localRotation * spreadRotation, firingRate * 2);
-            }
-        }
-        else
-        {
-            transform.localRotation = Quaternion.Slerp(transform.localRotation, startRot, firingRate);
-        }
-    }
+    //            transform.localRotation = Quaternion.Slerp(transform.localRotation, transform.localRotation * spreadRotation, firingRate * 2);
+    //        }
+    //    }
+    //    else
+    //    {
+    //        transform.localRotation = Quaternion.Slerp(transform.localRotation, startRot, firingRate);
+    //    }
+    //}
 
     void RecoilLower()
     {
@@ -145,6 +146,31 @@ public class Weapon : NetworkBehaviour
         }
     }
 
+    void ShootRay()
+    {
+        Vector3 forward = cam.transform.forward;
+        Vector3 randomSpread = new(Random.Range(-0.03f, 0.03f), 0f);
+        Vector3 spreadBullet = cam.transform.TransformDirection(weaponManager.recoilVectorList[currentRecoilIndex]);
+
+        Vector3 spreadRay = forward + spreadBullet;
+        if (currentRecoilIndex != 0) spreadRay.x += randomSpread.x;
+
+        RaycastHit hit;
+        if (Physics.Raycast(cam.transform.position, spreadRay, out hit, fireDistance))
+        {
+            if (hit.collider.CompareTag("Player"))
+            {
+                InstantiateHitEffectServerRpc(hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal));
+                hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage);
+            }
+            else
+            {
+                InstantiateBulletImpactServerRpc(hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal));
+            }
+        }
+    }
+
+
     [ServerRpc]
     void FireServerRpc()
     {
@@ -170,28 +196,7 @@ public class Weapon : NetworkBehaviour
         }
     }
 
-    void ShootRay()
-    {
-        Vector3 forward = cam.transform.forward;
-        Vector3 randomSpread = new(Random.Range(-0.03f, 0.03f), 0f);
-        Vector3 spreadBullet = cam.transform.TransformDirection(weaponManager.recoilVectorList[currentRecoilIndex]);
-
-        Vector3 spreadRay = forward + spreadBullet;
-        if (currentRecoilIndex != 0) spreadRay.x += randomSpread.x;
-
-        RaycastHit hit;
-
-        if (Physics.Raycast(cam.transform.position, spreadRay, out hit, fireDistance, interactionLayer))
-        { 
-            InstantiateBulletImpactServerRpc(hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal)); 
-        }
-
-        if (Physics.Raycast(cam.transform.position, spreadRay, out hit, fireDistance, playerHitLayer))
-        {
-            InstantiateHitEffectServerRpc(hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal));
-            hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage);
-        }
-    }
+    
 
     [ServerRpc(RequireOwnership = false)]
     void InstantiateHitEffectServerRpc(Vector3 position, Quaternion rotation)
@@ -227,15 +232,17 @@ public class Weapon : NetworkBehaviour
             playerShoots = true;
             StartCoroutine(BasicTimer());
 
-            if (Physics.Raycast(cam.transform.position, forward, out hit, fireDistance, interactionLayer))
+            if (Physics.Raycast(cam.transform.position, forward, out hit, fireDistance))
             {
-                InstantiateBulletImpactServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
-            }
-
-            if (Physics.Raycast(cam.transform.position, forward, out hit, fireDistance, playerHitLayer))
-            {
-                InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
-                hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage);
+                if (hit.collider.CompareTag("Player"))
+                {
+                    InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
+                    hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage);
+                }
+                else
+                {
+                    InstantiateBulletImpactServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
+                }
             }
 
             movementWeapon.SlideMovement();
@@ -256,17 +263,20 @@ public class Weapon : NetworkBehaviour
             Vector3 lookDirection = playerTransform.forward;
             Vector3 direction = lookDirection * -1f;
 
-            if (Physics.Raycast(cam.transform.position, forward, out hit, fireDistance, interactionLayer))
+            if (Physics.Raycast(cam.transform.position, forward, out hit, fireDistance))
             {
-                InstantiateBulletImpactServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
+                if (hit.collider.CompareTag("Player"))
+                {
+                    InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
+                    hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage);
+                }
+                else
+                {
+                    InstantiateBulletImpactServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
 
-                headRb.AddForce(Vector3.up * gravityGunForce * 10000f * Time.deltaTime, ForceMode.Impulse);
-                headRb.AddForce(direction * gravityGunForce * 5000f * Time.deltaTime, ForceMode.Impulse);
-            }
-            if (Physics.Raycast(cam.transform.position, forward, out hit, fireDistance, playerHitLayer))
-            {
-                InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
-                hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage);
+                    headRb.AddForce(Vector3.up * gravityGunForce * 10000f * Time.deltaTime, ForceMode.Impulse);
+                    headRb.AddForce(direction * gravityGunForce * 5000f * Time.deltaTime, ForceMode.Impulse);
+                }
             }
 
             LaserBeam(false);
@@ -329,6 +339,8 @@ public class Weapon : NetworkBehaviour
 
         leftHandMagazine.SetActive(false);
         magazineOnGun.SetActive(true);
+
+        weaponManager.TextBulletCount(_bullet, spareBullet);
     }
 
     IEnumerator BasicTimer()
