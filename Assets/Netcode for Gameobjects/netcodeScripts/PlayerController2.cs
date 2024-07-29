@@ -228,7 +228,7 @@ public class PlayerController2 : NetworkBehaviour
 
     public void ApplyDamage(float damage)
     {
-        if (!IsOwner)
+        if (IsOwner)
             return;
 
         if (IsServer)
