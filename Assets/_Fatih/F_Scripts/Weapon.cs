@@ -180,14 +180,16 @@ public class Weapon : NetworkBehaviour
         if (currentRecoilIndex != 0) spreadRay.x += randomSpread.x;
 
         RaycastHit hit;
+
+        if (Physics.Raycast(cam.transform.position, spreadRay, out hit, fireDistance, interactionLayer))
+        { 
+            InstantiateBulletImpactServerRpc(hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal)); 
+        }
+
         if (Physics.Raycast(cam.transform.position, spreadRay, out hit, fireDistance, playerHitLayer))
         {
             InstantiateHitEffectServerRpc(hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal));
             hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage);
-        }
-        else
-        {
-            InstantiateBulletImpactServerRpc(hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal));
         }
     }
 
@@ -225,18 +227,17 @@ public class Weapon : NetworkBehaviour
             playerShoots = true;
             StartCoroutine(BasicTimer());
 
-            if (Physics.Raycast(cam.transform.position, forward, out hit, fireDistance))
+            if (Physics.Raycast(cam.transform.position, forward, out hit, fireDistance, interactionLayer))
             {
-                if (hit.collider.CompareTag("Player"))
-                {
-                    InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
-                    hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage);
-                }
-                else
-                {
-                    InstantiateBulletImpactServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
-                }
+                InstantiateBulletImpactServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
             }
+
+            if (Physics.Raycast(cam.transform.position, forward, out hit, fireDistance, playerHitLayer))
+            {
+                InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
+                hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage);
+            }
+
             movementWeapon.SlideMovement();
         }
 
@@ -255,18 +256,18 @@ public class Weapon : NetworkBehaviour
             Vector3 lookDirection = playerTransform.forward;
             Vector3 direction = lookDirection * -1f;
 
-                if (Physics.Raycast(cam.transform.position, forward, out hit, fireDistance, playerHitLayer))
-                {
-                    InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
-                    hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage);
-                }
-                else
-                {
-                    InstantiateBulletImpactServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
+            if (Physics.Raycast(cam.transform.position, forward, out hit, fireDistance, interactionLayer))
+            {
+                InstantiateBulletImpactServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
 
-                    headRb.AddForce(Vector3.up * gravityGunForce * 10000f * Time.deltaTime, ForceMode.Impulse);
-                    headRb.AddForce(direction * gravityGunForce * 5000f * Time.deltaTime, ForceMode.Impulse);
-                }
+                headRb.AddForce(Vector3.up * gravityGunForce * 10000f * Time.deltaTime, ForceMode.Impulse);
+                headRb.AddForce(direction * gravityGunForce * 5000f * Time.deltaTime, ForceMode.Impulse);
+            }
+            if (Physics.Raycast(cam.transform.position, forward, out hit, fireDistance, playerHitLayer))
+            {
+                InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
+                hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage);
+            }
 
             LaserBeam(false);
             gravityGunForce = 0f;
