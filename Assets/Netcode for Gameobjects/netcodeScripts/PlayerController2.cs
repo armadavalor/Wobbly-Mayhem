@@ -46,7 +46,7 @@ public class PlayerController2 : NetworkBehaviour
     bool isGrounded;
     bool isDead = false;
     public float maxHealth = 100f;
-    private NetworkVariable<float> currentHealth = new NetworkVariable<float>(); 
+    private NetworkVariable<float> currentHealth = new NetworkVariable<float>(100f); 
     
     float horizontal, vertical;
    
@@ -226,20 +226,28 @@ public class PlayerController2 : NetworkBehaviour
 
     }
 
+    
+    
+    [ServerRpc]
+    public void ApplyDamageServerRpc(float damage)
+    {
+        if (!IsServer)
+            return;
+
+        currentHealth.Value -= damage;
+        Debug.Log(currentHealth.Value);
+
+        if (currentHealth.Value <= 0f)
+        {
+            Die(respawn: true);
+        }
+    }
     public void ApplyDamage(float damage)
     {
         if (IsOwner)
             return;
-
-        if (IsServer)
-        {
-            currentHealth.Value -= damage;
-            Debug.Log(currentHealth.Value);
-            if (currentHealth.Value <= 0f)
-            {
-                Die(respawn:true);
-            }
-        }
+        
+        ApplyDamageServerRpc(damage);
     }
     
     
