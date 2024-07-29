@@ -153,16 +153,31 @@ PrefabInstance:
       propertyPath: cam
       value: 
       objectReference: {fileID: 575463107375144576}
+    - target: {fileID: 5345813122669311658, guid: 9292670f4c07b364eab92aa69317a7fb,
+        type: 3}
+      propertyPath: playerHitLayer.m_Bits
+      value: 320
+      objectReference: {fileID: 0}
     - target: {fileID: 6682023084311875767, guid: 9292670f4c07b364eab92aa69317a7fb,
+        type: 3}
+      propertyPath: cam
+      value: 
+      objectReference: {fileID: 575463107375144576}
+    - target: {fileID: 6682023084311875767, guid: 9292670f4c07b364eab92aa69317a7fb,
+        type: 3}
+      propertyPath: playerHitLayer.m_Bits
+      value: 320
+      objectReference: {fileID: 0}
+    - target: {fileID: 6905490859903256514, guid: 9292670f4c07b364eab92aa69317a7fb,
         type: 3}
       propertyPath: cam
       value: 
       objectReference: {fileID: 575463107375144576}
     - target: {fileID: 6905490859903256514, guid: 9292670f4c07b364eab92aa69317a7fb,
         type: 3}
-      propertyPath: cam
-      value: 
-      objectReference: {fileID: 575463107375144576}
+      propertyPath: playerHitLayer.m_Bits
+      value: 320
+      objectReference: {fileID: 0}
     - target: {fileID: 8457679393874306453, guid: 9292670f4c07b364eab92aa69317a7fb,
         type: 3}
       propertyPath: cam
@@ -173,6 +188,11 @@ PrefabInstance:
       propertyPath: headRb
       value: 
       objectReference: {fileID: 3360698043754708453}
+    - target: {fileID: 8457679393874306453, guid: 9292670f4c07b364eab92aa69317a7fb,
+        type: 3}
+      propertyPath: playerHitLayer.m_Bits
+      value: 320
+      objectReference: {fileID: 0}
     - target: {fileID: 8649786862923015694, guid: 9292670f4c07b364eab92aa69317a7fb,
         type: 3}
       propertyPath: m_Name
@@ -337,6 +357,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: FF__WC Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 985003533560975107, guid: 277eb20bb75af5b4aae9387e8fb5a856,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 3636976170882047791, guid: 277eb20bb75af5b4aae9387e8fb5a856,
         type: 3}

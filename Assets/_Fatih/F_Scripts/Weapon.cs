@@ -13,6 +13,7 @@ public class Weapon : NetworkBehaviour
     Quaternion startRot;
 
     [SerializeField] LayerMask interactionLayer;
+    [SerializeField] LayerMask playerHitLayer;
     [SerializeField] GameObject bulletImpactPrefab;
     [SerializeField] GameObject hitEffectPrefab;
     [SerializeField] GameObject magazineOnGun, leftHandMagazine;
@@ -179,16 +180,14 @@ public class Weapon : NetworkBehaviour
         if (currentRecoilIndex != 0) spreadRay.x += randomSpread.x;
 
         RaycastHit hit;
-        if (Physics.Raycast(cam.transform.position, spreadRay, out hit, fireDistance))
+        if (Physics.Raycast(cam.transform.position, spreadRay, out hit, fireDistance, playerHitLayer))
         {
-            if (hit.collider.CompareTag("Player"))
-            {
-                InstantiateHitEffectServerRpc(hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal));
-            }
-            else
-            {
-                InstantiateBulletImpactServerRpc(hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal));
-            }
+            InstantiateHitEffectServerRpc(hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal));
+            hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage);
+        }
+        else
+        {
+            InstantiateBulletImpactServerRpc(hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal));
         }
     }
 
@@ -256,9 +255,7 @@ public class Weapon : NetworkBehaviour
             Vector3 lookDirection = playerTransform.forward;
             Vector3 direction = lookDirection * -1f;
 
-            if (Physics.Raycast(cam.transform.position, forward, out hit, fireDistance))
-            {
-                if (hit.collider.CompareTag("Player"))
+                if (Physics.Raycast(cam.transform.position, forward, out hit, fireDistance, playerHitLayer))
                 {
                     InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
                     hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage);
@@ -270,7 +267,6 @@ public class Weapon : NetworkBehaviour
                     headRb.AddForce(Vector3.up * gravityGunForce * 10000f * Time.deltaTime, ForceMode.Impulse);
                     headRb.AddForce(direction * gravityGunForce * 5000f * Time.deltaTime, ForceMode.Impulse);
                 }
-            }
 
             LaserBeam(false);
             gravityGunForce = 0f;
