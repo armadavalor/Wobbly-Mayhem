@@ -569,7 +569,7 @@ GameObject:
   - component: {fileID: 1016227118225097197}
   - component: {fileID: 4432408015411567241}
   m_Layer: 6
-  m_Name: WobblyCharHandIK NewCam
+  m_Name: Wobbly Character
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
