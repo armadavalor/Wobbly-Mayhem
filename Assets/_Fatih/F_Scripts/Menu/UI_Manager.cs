@@ -24,7 +24,7 @@ public class UI_Manager : MonoBehaviour
 
         if (weaponManager != null)
         {
-            weaponManager.canSwitchWeapon = escMenuIsOpened;
+            weaponManager.canSwitchWeapon.Value = escMenuIsOpened;
         }
     }
 }

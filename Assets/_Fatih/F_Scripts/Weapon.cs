@@ -7,35 +7,33 @@ using UnityEngine.VFX;
 
 public class Weapon : NetworkBehaviour
 {
-    // Silah türlerini belirten bir enum
     public enum WeaponType { Knife, Pistol, Rifle, GravityGun };
     public WeaponType weaponType;
 
     Quaternion startRot;
 
-    [SerializeField] LayerMask interactionLayer; // Etkileþim katmaný
-    [SerializeField] GameObject bulletImpact; // Kurþun çarptýðýnda kullanýlacak efekt
-    [SerializeField] GameObject hitEffect; // Kurþun çarptýðýnda kullanýlacak efekt
+    [SerializeField] LayerMask interactionLayer;
+    [SerializeField] GameObject bulletImpactPrefab;
+    [SerializeField] GameObject hitEffectPrefab;
     [SerializeField] GameObject magazineOnGun, leftHandMagazine;
-    [SerializeField] Camera cam; // Silahýn kullanacaðý kamera
+    [SerializeField] Camera cam;
     [SerializeField] VisualEffect muzzleVFX;
     [SerializeField] Rigidbody headRb;
 
     [Header("General Specs")]
-    [SerializeField] int Damage; // Silahýn verdiði hasar
-    [SerializeField] int spareBullet; // Yedek mermi sayýsý
-    [SerializeField] int magazineBullet; // Silahýn þarjörü doluyken alabileceði maksimum mermi sayýsý
-    [SerializeField] int _bullet; // Anlýk mermi sayýsý
+    [SerializeField] int Damage;
+    [SerializeField] int spareBullet;
+    [SerializeField] int magazineBullet;
+    [SerializeField] int _bullet;
     [SerializeField] int currentRecoilIndex;
-    [SerializeField] bool reloading; // Yeniden yükleme yapýlýyor mu?
-    [SerializeField] bool playerShoots; // Oyuncu þu anda ateþ ediyor mu?
-    [SerializeField] bool playerCanShoot = true; // Oyuncu ateþ edebilir mi?
-    [SerializeField] float firingRate; // Ateþ etme hýzý
-    [SerializeField] float fireDistance; // Ateþ etme mesafesi
-
+    [SerializeField] bool reloading;
+    [SerializeField] bool playerShoots;
+    [SerializeField] bool playerCanShoot = true;
+    [SerializeField] float firingRate;
+    [SerializeField] float fireDistance;
 
     [Header("Gravity Gun")]
-    [SerializeField] float gravityGunForce; // Gravity Gun kuvveti
+    [SerializeField] float gravityGunForce;
     [SerializeField] GameObject[] laserBeam;
 
     public WeaponManager weaponManager;
@@ -48,12 +46,10 @@ public class Weapon : NetworkBehaviour
             reloading = true;
             Invoke(nameof(Reload), 1f);
         }
-        
     }
 
-    private void Start()
+    private void Awake()
     {
-        // Maksimum mermi sayýsýný anlýk mermi sayýsýyla eþitle
         magazineBullet = _bullet;
         movementWeapon = GetComponent<WeaponMovements>();
         startRot = transform.localRotation;
@@ -61,16 +57,11 @@ public class Weapon : NetworkBehaviour
 
     private void Update()
     {
-        playerCanShoot = weaponManager.canSwitchWeapon;
-
-        // Oyuncu ateþ edebilir mi kontrol et ve ateþle
         if (IsOwner && playerCanShoot)
         {
             SwitchWeapon();
-            weaponManager.TextBullentCount(_bullet, spareBullet);
         }
 
-        // R tuþuna basýldýðýnda ve mermiler bittiðinde yeniden yükle
         if (_bullet != magazineBullet && !reloading && spareBullet > 0 && (Input.GetKeyDown(KeyCode.R) || _bullet <= 0))
         {
             reloading = true;
@@ -83,8 +74,6 @@ public class Weapon : NetworkBehaviour
         {
             Invoke(nameof(RecoilLower), firingRate * 2);
         }
-
-        
     }
 
     private void LateUpdate()
@@ -93,7 +82,6 @@ public class Weapon : NetworkBehaviour
         {
             if (_bullet > 0)
             {
-                // Silahýn rotasyonunu yayýlma açýsýna göre ayarla
                 Vector3 quaRot = new(0f, weaponManager.recoilVectorList[currentRecoilIndex].x * 1f,
                     weaponManager.recoilVectorList[currentRecoilIndex].y * -1f);
                 Quaternion spreadRotation = Quaternion.Euler(quaRot);
@@ -115,29 +103,23 @@ public class Weapon : NetworkBehaviour
 
     void SwitchWeapon()
     {
-        // Ateþ etmiyorsa ve yeniden yüklenmiyorsa ateþle
         if (!playerShoots && !reloading)
         {
             switch (weaponType)
             {
                 case WeaponType.GravityGun:
-                    // Gravity Gun: Sað fare tuþuna basarak kuvveti artýr, býrakýldýðýnda ateþle
                     FireServerRpc();
                     break;
 
                 case WeaponType.Rifle:
-                    // Makinalý Tüfek: Sürekli ateþle
                     Fire();
-                    // if (Input.GetMouseButtonDown(1)) GetComponent<RifleScope>().Scope();
                     break;
 
                 case WeaponType.Pistol:
-                    // Tabanca: Sol fare tuþuna basýldýðýnda ateþle
                     if (Input.GetMouseButtonDown(0)) Fire();
                     break;
 
                 case WeaponType.Knife:
-                    // Býçak
                     FireServerRpc();
                     break;
             }
@@ -146,20 +128,16 @@ public class Weapon : NetworkBehaviour
 
     void Fire()
     {
-        // Ateþ ediliyor mu ve yeniden yükleniyor mu kontrol et
         if (Input.GetMouseButton(0) && !playerShoots && !reloading)
         {
             if (_bullet > 0)
             {
-                // Mermiyi azalt
                 _bullet--;
-                weaponManager.TextBullentCount(_bullet, spareBullet);
                 muzzleVFX.Play();
 
                 FireServerRpc();
             }
 
-            // Ateþ etmeyi baþlat ve bir süre sonra durdur
             playerShoots = true;
             currentRecoilIndex++;
             StartCoroutine(BasicTimer());
@@ -175,22 +153,19 @@ public class Weapon : NetworkBehaviour
     [ClientRpc]
     void FireClientRpc()
     {
-        if (IsOwner)
+        if (weaponType == WeaponType.Rifle || weaponType == WeaponType.Pistol)
         {
-            if (weaponType == WeaponType.Rifle || weaponType == WeaponType.Pistol)
-            {
-                muzzleVFX.Play();
-                ShootRay();
-                movementWeapon.SlideMovement();
-            }
-            if (weaponType == WeaponType.GravityGun)
-            {
-                GravityGun();
-            }
-            if (weaponType == WeaponType.Knife)
-            {
-                KnifeAttacks();
-            }
+            muzzleVFX.Play();
+            ShootRay();
+            movementWeapon.SlideMovement();
+        }
+        if (weaponType == WeaponType.GravityGun)
+        {
+            GravityGun();
+        }
+        if (weaponType == WeaponType.Knife)
+        {
+            KnifeAttacks();
         }
     }
 
@@ -203,19 +178,42 @@ public class Weapon : NetworkBehaviour
         Vector3 spreadRay = forward + spreadBullet;
         if (currentRecoilIndex != 0) spreadRay.x += randomSpread.x;
 
-        // Bir objeye isabet etti mi?
         RaycastHit hit;
         if (Physics.Raycast(cam.transform.position, spreadRay, out hit, fireDistance))
         {
             if (hit.collider.CompareTag("Player"))
             {
-                Instantiate(hitEffect, hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal));
+                InstantiateHitEffectServerRpc(hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal));
             }
             else
             {
-                Instantiate(bulletImpact, hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal));
+                InstantiateBulletImpactServerRpc(hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal));
             }
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void InstantiateHitEffectServerRpc(Vector3 position, Quaternion rotation)
+    {
+        InstantiateHitEffectClientRpc(position, rotation);
+    }
+
+    [ClientRpc]
+    void InstantiateHitEffectClientRpc(Vector3 position, Quaternion rotation)
+    {
+        Instantiate(hitEffectPrefab, position, rotation);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void InstantiateBulletImpactServerRpc(Vector3 position, Quaternion rotation)
+    {
+        InstantiateBulletImpactClientRpc(position, rotation);
+    }
+
+    [ClientRpc]
+    void InstantiateBulletImpactClientRpc(Vector3 position, Quaternion rotation)
+    {
+        Instantiate(bulletImpactPrefab, position, rotation);
     }
 
     void GravityGun()
@@ -232,11 +230,11 @@ public class Weapon : NetworkBehaviour
             {
                 if (hit.collider.CompareTag("Player"))
                 {
-                    Instantiate(hitEffect, hit.point, Quaternion.LookRotation(hit.normal));
+                    InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
                 }
                 else
                 {
-                    Instantiate(bulletImpact, hit.point, Quaternion.LookRotation(hit.normal));
+                    InstantiateBulletImpactServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
                 }
             }
             movementWeapon.SlideMovement();
@@ -253,23 +251,19 @@ public class Weapon : NetworkBehaviour
         {
             PlayerController2 playerCont = GetComponentInParent<PlayerController2>();
 
-            // Oyuncunun bakýþ yönünü al
             Transform playerTransform = playerCont.gameObject.transform;
             Vector3 lookDirection = playerTransform.forward;
-
-            // Kuvvet yönünü belirle ve tersine çevir
             Vector3 direction = lookDirection * -1f;
-
 
             if (Physics.Raycast(cam.transform.position, forward, out hit, fireDistance))
             {
                 if (hit.collider.CompareTag("Player"))
                 {
-                    Instantiate(hitEffect, hit.point, Quaternion.LookRotation(hit.normal));
+                    InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
                 }
                 else
                 {
-                    Instantiate(bulletImpact, hit.point, Quaternion.LookRotation(hit.normal));
+                    InstantiateBulletImpactServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
 
                     headRb.AddForce(Vector3.up * gravityGunForce * 10000f * Time.deltaTime, ForceMode.Impulse);
                     headRb.AddForce(direction * gravityGunForce * 5000f * Time.deltaTime, ForceMode.Impulse);
@@ -280,7 +274,6 @@ public class Weapon : NetworkBehaviour
             gravityGunForce = 0f;
         }
     }
-
 
     void LaserBeam(bool isActive)
     {
@@ -317,26 +310,23 @@ public class Weapon : NetworkBehaviour
             Rigidbody knifeRb = gameObject.AddComponent<Rigidbody>();
 
             knifeRb.AddForce(Vector3.forward * 10f * Time.deltaTime, ForceMode.Impulse);
-            Debug.Log("calýstý");
+            Debug.Log("Knife attack executed");
         }
     }
 
     public void Reload()
     {
-        // Eksik mermileri hesapla ve yeniden yükle
         int missingBullets = magazineBullet - _bullet;
         int bulletsToLoad = Mathf.Min(spareBullet, missingBullets);
 
         _bullet += bulletsToLoad;
         spareBullet -= bulletsToLoad;
 
-        // Mermi sayýlarýný sýnýrla
         _bullet = Mathf.Clamp(_bullet, 0, magazineBullet);
         spareBullet = Mathf.Clamp(spareBullet, 0, 100);
 
         reloading = false;
         playerCanShoot = true;
-        weaponManager.TextBullentCount(_bullet, spareBullet);
 
         leftHandMagazine.SetActive(false);
         magazineOnGun.SetActive(true);
@@ -344,7 +334,6 @@ public class Weapon : NetworkBehaviour
 
     IEnumerator BasicTimer()
     {
-        // Belirtilen süre boyunca bekle ve ilgili deðiþkeni sýfýrla
         yield return new WaitForSeconds(firingRate);
         playerShoots = false;
     }
