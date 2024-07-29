@@ -228,9 +228,13 @@ public class PlayerController2 : NetworkBehaviour
 
     public void ApplyDamage(float damage)
     {
+        if (!IsOwner)
+            return;
+
         if (IsServer)
         {
             currentHealth.Value -= damage;
+            Debug.Log(currentHealth.Value);
             if (currentHealth.Value <= 0f)
             {
                 Die(respawn:true);

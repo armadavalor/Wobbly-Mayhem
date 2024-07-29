@@ -231,6 +231,7 @@ public class Weapon : NetworkBehaviour
                 if (hit.collider.CompareTag("Player"))
                 {
                     InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
+                    hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage);
                 }
                 else
                 {
@@ -260,6 +261,7 @@ public class Weapon : NetworkBehaviour
                 if (hit.collider.CompareTag("Player"))
                 {
                     InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
+                    hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage);
                 }
                 else
                 {
