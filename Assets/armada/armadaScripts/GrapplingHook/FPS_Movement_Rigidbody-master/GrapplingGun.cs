@@ -15,7 +15,7 @@ public class GrapplingGun : NetworkBehaviour {
     private SpringJoint joint;
     private Rigidbody playerRb;
     public float pullForce = 10f;
-    private bool ropeIsDrawed = false;
+    
 
     
     
@@ -99,7 +99,7 @@ public class GrapplingGun : NetworkBehaviour {
         
         lr.SetPosition(0, gunTip.position);
         lr.SetPosition(1, currentGrapplePosition);
-        ropeIsDrawed = true;
+       
         
     }
 

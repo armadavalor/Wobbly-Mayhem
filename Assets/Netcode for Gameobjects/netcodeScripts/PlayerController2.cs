@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using Cinemachine;
+using Random = UnityEngine.Random;
 
 public class PlayerController2 : NetworkBehaviour
 {
@@ -64,7 +65,10 @@ public class PlayerController2 : NetworkBehaviour
             enabled = false;
             return;
         }
-
+        // Set random spawn point
+        Transform spawnPoint = SpawnManager.Instance.spawnPoints[Random.Range(0, SpawnManager.Instance.spawnPoints.Count)];
+        transform.position = spawnPoint.position;
+        transform.rotation = spawnPoint.rotation;
         InitializeComponents();
     }
 
