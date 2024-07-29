@@ -423,14 +423,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1686191920776896112}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.82118374, y: 0.4107587, z: 0.2684715, w: 0.29130346}
-  m_LocalPosition: {x: -0.00476, y: 0.00822, z: 0.00277}
+  m_LocalRotation: {x: -0.8120468, y: 0.47331566, z: 0.1725806, w: 0.29456455}
+  m_LocalPosition: {x: -0.00668, y: 0.01137, z: 0.00029}
   m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1894613736875281710}
   m_Father: {fileID: 3006406520980927364}
-  m_LocalEulerAnglesHint: {x: -44.345, y: 196.375, z: -133.563}
+  m_LocalEulerAnglesHint: {x: -39.924, y: 180.108, z: -119.566}
 --- !u!114 &3415037194246576155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -729,6 +729,9 @@ MonoBehaviour:
   interactionLayer:
     serializedVersion: 2
     m_Bits: 8
+  playerHitLayer:
+    serializedVersion: 2
+    m_Bits: 0
   bulletImpactPrefab: {fileID: 0}
   hitEffectPrefab: {fileID: 2254961100031153928, guid: 137bde248953a9045b59f3cee49408e6,
     type: 3}
@@ -975,8 +978,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3358338772204825994}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.8492234, y: 0.5115695, z: 0.032454774, w: 0.12674025}
-  m_LocalPosition: {x: 0.00084, y: 0.0026, z: 0.00145}
+  m_LocalRotation: {x: -0.78508055, y: 0.6073358, z: 0.067020334, w: 0.10148959}
+  m_LocalPosition: {x: 0.00054, y: 0.00268, z: 0.00121}
   m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -989,7 +992,7 @@ Transform:
   - {fileID: 6030092810752823811}
   - {fileID: 4368059114514765829}
   m_Father: {fileID: 3006406520980927364}
-  m_LocalEulerAnglesHint: {x: -14.387, y: -184.414, z: 242.687}
+  m_LocalEulerAnglesHint: {x: -13.932, y: -181.065, z: 255.581}
 --- !u!114 &6682023084311875767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1006,6 +1009,9 @@ MonoBehaviour:
   interactionLayer:
     serializedVersion: 2
     m_Bits: 8
+  playerHitLayer:
+    serializedVersion: 2
+    m_Bits: 0
   bulletImpactPrefab: {fileID: 5943092145398083209, guid: 009a6fef70cc2d8449548e9afc778f39,
     type: 3}
   hitEffectPrefab: {fileID: 2254961100031153928, guid: 137bde248953a9045b59f3cee49408e6,
@@ -1635,7 +1641,7 @@ Transform:
   m_GameObject: {fileID: 5118203868907713335}
   serializedVersion: 2
   m_LocalRotation: {x: -0.28556365, y: 0.7933554, z: -0.08953191, w: 0.5301177}
-  m_LocalPosition: {x: -0.05133168, y: 0.044507846, z: 0.06652979}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -1663,6 +1669,9 @@ MonoBehaviour:
   interactionLayer:
     serializedVersion: 2
     m_Bits: 8
+  playerHitLayer:
+    serializedVersion: 2
+    m_Bits: 0
   bulletImpactPrefab: {fileID: 6920342802124444147, guid: 5b416a8b05a4e7d479e7406759819138,
     type: 3}
   hitEffectPrefab: {fileID: 2254961100031153928, guid: 137bde248953a9045b59f3cee49408e6,
@@ -1704,7 +1713,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movingPart: {fileID: 1509117800245942139}
   donenmec: {fileID: 5080353345500039726}
-  targetPosition: {x: 0, y: 0, z: -0.1}
+  targetPosition: {x: -0.00668, y: 0.01137, z: -0.1}
   speed: 3
 --- !u!1 &5132178601274512468
 GameObject:
@@ -1817,8 +1826,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5327589065084109491}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.83167565, y: 0.5461101, z: 0.09997822, w: 0.009154949}
-  m_LocalPosition: {x: -0.00009000604, y: 0.0029600046, z: 0.002249997}
+  m_LocalRotation: {x: -0.79512835, y: 0.5819581, z: 0.13896182, w: -0.09892114}
+  m_LocalPosition: {x: 0.00082, y: 0.00243, z: 0.00147}
   m_LocalScale: {x: 0.049999982, y: 0.049999986, z: 0.050000012}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -1828,7 +1837,7 @@ Transform:
   - {fileID: 2195210388719662685}
   - {fileID: 6158553949955474993}
   m_Father: {fileID: 3006406520980927364}
-  m_LocalEulerAnglesHint: {x: -7.148, y: -170.937, z: 246.014}
+  m_LocalEulerAnglesHint: {x: -0.254, y: -160.359, z: 252.357}
 --- !u!114 &6905490859903256514
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1845,6 +1854,9 @@ MonoBehaviour:
   interactionLayer:
     serializedVersion: 2
     m_Bits: 8
+  playerHitLayer:
+    serializedVersion: 2
+    m_Bits: 0
   bulletImpactPrefab: {fileID: 5943092145398083209, guid: 009a6fef70cc2d8449548e9afc778f39,
     type: 3}
   hitEffectPrefab: {fileID: 2254961100031153928, guid: 137bde248953a9045b59f3cee49408e6,

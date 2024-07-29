@@ -47,6 +47,7 @@ public class PlayerController2 : NetworkBehaviour
     bool isDead = false;
     public float maxHealth = 100f;
     private NetworkVariable<float> currentHealth = new NetworkVariable<float>(100f); 
+    private float predictedHealth;
     
     float horizontal, vertical;
    
@@ -78,7 +79,6 @@ public class PlayerController2 : NetworkBehaviour
         {
             InitializeComponents();
         }
-        currentHealth.Value = maxHealth;
     }
 
     void InitializeComponents()
@@ -228,47 +228,91 @@ public class PlayerController2 : NetworkBehaviour
 
     
     
-    [ServerRpc]
-    public void ApplyDamageServerRpc(float damage)
-    {
-        if (!IsServer)
-            return;
+     [ServerRpc(RequireOwnership = false)]
+     private void ApplyDamageServerRpc(float damage)
+     {
+         health -= damage;
+         Debug.Log($"[Server] Damage applied: {damage}, Current health: {health}");
 
-        currentHealth.Value -= damage;
-        Debug.Log(currentHealth.Value);
+         if (health <= 0 && !isDead)
+         {
+             DieServerRpc(true);
+         }
+     }
 
-        if (currentHealth.Value <= 0f)
-        {
-            Die(respawn: true);
-        }
-    }
+    public float health = 100f;
+
     public void ApplyDamage(float damage)
     {
-        if (IsOwner)
-            return;
-        
-        ApplyDamageServerRpc(damage);
-    }
-    
-    
-    public void Die(bool respawn)
-    {
-        foreach (ConfigurableJoint cj in cjs)
+        if (!IsServer)
         {
-            cj.angularXDrive = inAirDrive;
-            cj.angularYZDrive = inAirDrive;
+            ApplyDamageServerRpc(damage); // Client requests server to apply damage
+            return;
         }
 
-        hipsCj.angularYZDrive = hipsInAirDrive;
-        hipsCj.angularXDrive = hipsInAirDrive;
+        health -= damage;
+        Debug.Log($"Damage applied: {damage}, Current health: {health}");
 
-        proceduralLegs.DisableIk();
-        isGrounded = false;
-
-        if (!respawn)
-            isDead = true;
+        if (health <= 0 && !isDead)
+        {
+            DieServerRpc(true);
+        }
     }
 
+
+    [ServerRpc(RequireOwnership = false)]
+    public void DieServerRpc(bool respawn)
+    {
+        Debug.Log("Player has died.");
+        isDead = true;
+        DieClientRpc(respawn);
+
+        if (respawn)
+        {
+            StartCoroutine(RespawnCoroutine(5f)); // Respawn after 5 seconds
+        }
+    }
+
+    [ClientRpc]
+    private void DieClientRpc(bool respawn)
+    {
+        if (respawn)
+        {
+             isDead = true;
+             foreach (ConfigurableJoint cj in cjs)
+            {
+                cj.angularXDrive = inAirDrive;
+                cj.angularYZDrive = inAirDrive;
+            }
+
+            hipsCj.angularYZDrive = hipsInAirDrive;
+            hipsCj.angularXDrive = hipsInAirDrive;
+            isGrounded = false;
+            proceduralLegs.DisableIk();
+        
+        
+      
+            StartCoroutine(RespawnCoroutine(5f)); // Start the respawn coroutine
+        }
+
+    }
+    private IEnumerator RespawnCoroutine(float respawnTime)
+    {
+        yield return new WaitForSeconds(respawnTime);
+        Transform spawnPoint = SpawnManager.Instance.spawnPoints[Random.Range(0, SpawnManager.Instance.spawnPoints.Count)];
+        
+        if (spawnPoint)
+        {
+            transform.position = spawnPoint.position;
+            transform.rotation = spawnPoint.rotation;
+            // Reset player state here (health, position, etc.)
+            health = 100f;
+            isDead = false;
+            isGrounded = true;
+            proceduralLegs.EnableIk();
+            SetDrives();
+        }
+    }
     void DoubleJump()
     {
         // Jump logic

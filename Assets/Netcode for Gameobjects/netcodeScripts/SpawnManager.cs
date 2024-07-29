@@ -18,4 +18,10 @@ public class SpawnManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    public Transform GetRandomSpawnPoint()
+    {
+        if (spawnPoints.Count == 0) return null;
+        int index = Random.Range(0, spawnPoints.Count);
+        return spawnPoints[index];
+    }
 }

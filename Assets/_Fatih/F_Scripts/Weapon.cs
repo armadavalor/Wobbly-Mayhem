@@ -154,20 +154,30 @@ public class Weapon : NetworkBehaviour
 
         Vector3 spreadRay = forward + spreadBullet;
         if (currentRecoilIndex != 0) spreadRay.x += randomSpread.x;
-
+       
         RaycastHit hit;
         if (Physics.Raycast(cam.transform.position, spreadRay, out hit, fireDistance))
         {
             if (hit.collider.CompareTag("Player"))
             {
                 InstantiateHitEffectServerRpc(hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal));
-                hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage);
+                DamageReceiver damageReceiver = hit.collider.GetComponent<DamageReceiver>();
+                if (damageReceiver != null)
+                {
+                    Debug.Log($"Hit player: {hit.collider.name}, applying damage: {Damage}");
+                    damageReceiver.ApplyDamage(Damage);
+                }
+                else
+                {
+                    Debug.LogError("DamageReceiver component not found on the hit object.");
+                }
             }
             else
             {
                 InstantiateBulletImpactServerRpc(hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal));
             }
         }
+        
     }
 
 
