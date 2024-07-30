@@ -58,25 +58,30 @@ public class Weapon : NetworkBehaviour
 
     private void Update()
     {
-        if (IsOwner && playerCanShoot)
+        if (IsOwner)
         {
-            SwitchWeapon();
-            weaponManager.TextBulletCount(_bullet, spareBullet);
-        }
+            if (playerCanShoot)
+            {
+                SwitchWeapon();
+                weaponManager.TextBulletCount(_bullet, spareBullet);
+            }
 
-        if (_bullet != magazineBullet && !reloading && spareBullet > 0 && (Input.GetKeyDown(KeyCode.R) || _bullet <= 0))
-        {
-            reloading = true;
-            leftHandMagazine.SetActive(true);
-            magazineOnGun.SetActive(false);
-            Invoke(nameof(Reload), 1f);
-        }
+            if (_bullet != magazineBullet && !reloading && spareBullet > 0 && (Input.GetKeyDown(KeyCode.R) || _bullet <= 0))
+            {
+                reloading = true;
+                leftHandMagazine.SetActive(true);
+                magazineOnGun.SetActive(false);
+                Invoke(nameof(Reload), 1f);
+            }
 
-        if (currentRecoilIndex > 0 && !playerShoots)
-        {
-            Invoke(nameof(RecoilLower), firingRate * 2);
+            if (currentRecoilIndex > 0 && !playerShoots)
+            {
+                Invoke(nameof(RecoilLower), firingRate * 2);
+            }
         }
     }
+
+        
 
     //private void LateUpdate()
     //{

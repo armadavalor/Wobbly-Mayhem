@@ -198,6 +198,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 188027774707385924, guid: 9292670f4c07b364eab92aa69317a7fb,
         type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 188027774707385924, guid: 9292670f4c07b364eab92aa69317a7fb,
+        type: 3}
       propertyPath: bulletText
       value: 
       objectReference: {fileID: 1299448274353815375}
@@ -251,21 +256,41 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4740652615738749334, guid: 9292670f4c07b364eab92aa69317a7fb,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5345813122669311658, guid: 9292670f4c07b364eab92aa69317a7fb,
+        type: 3}
+      propertyPath: cam
+      value: 
+      objectReference: {fileID: 575463107375144576}
+    - target: {fileID: 5345813122669311658, guid: 9292670f4c07b364eab92aa69317a7fb,
+        type: 3}
+      propertyPath: weaponManager
+      value: 
+      objectReference: {fileID: 5243571902531128467}
+    - target: {fileID: 6682023084311875767, guid: 9292670f4c07b364eab92aa69317a7fb,
         type: 3}
       propertyPath: cam
       value: 
       objectReference: {fileID: 575463107375144576}
     - target: {fileID: 6682023084311875767, guid: 9292670f4c07b364eab92aa69317a7fb,
         type: 3}
-      propertyPath: cam
+      propertyPath: weaponManager
       value: 
-      objectReference: {fileID: 575463107375144576}
+      objectReference: {fileID: 5243571902531128467}
     - target: {fileID: 6905490859903256514, guid: 9292670f4c07b364eab92aa69317a7fb,
         type: 3}
       propertyPath: cam
       value: 
       objectReference: {fileID: 575463107375144576}
+    - target: {fileID: 6905490859903256514, guid: 9292670f4c07b364eab92aa69317a7fb,
+        type: 3}
+      propertyPath: weaponManager
+      value: 
+      objectReference: {fileID: 5243571902531128467}
     - target: {fileID: 8457679393874306453, guid: 9292670f4c07b364eab92aa69317a7fb,
         type: 3}
       propertyPath: cam
@@ -276,6 +301,11 @@ PrefabInstance:
       propertyPath: headRb
       value: 
       objectReference: {fileID: 3360698043754708453}
+    - target: {fileID: 8457679393874306453, guid: 9292670f4c07b364eab92aa69317a7fb,
+        type: 3}
+      propertyPath: weaponManager
+      value: 
+      objectReference: {fileID: 5243571902531128467}
     - target: {fileID: 8649786862923015694, guid: 9292670f4c07b364eab92aa69317a7fb,
         type: 3}
       propertyPath: m_Name
@@ -286,6 +316,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9292670f4c07b364eab92aa69317a7fb, type: 3}
+--- !u!114 &5243571902531128467 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 188027774707385924, guid: 9292670f4c07b364eab92aa69317a7fb,
+    type: 3}
+  m_PrefabInstance: {fileID: 5357289724635581143}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2825b98a1ac1c3c43bfa66e701f11c8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &7196765757554653523 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3006406520980927364, guid: 9292670f4c07b364eab92aa69317a7fb,
