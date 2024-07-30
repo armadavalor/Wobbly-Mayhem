@@ -501,6 +501,11 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 3576571341054126641, guid: 277eb20bb75af5b4aae9387e8fb5a856,
+        type: 3}
+      propertyPath: m_UpdateMethod
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3636976170882047791, guid: 277eb20bb75af5b4aae9387e8fb5a856,
         type: 3}
       propertyPath: m_CullingMask.m_Bits

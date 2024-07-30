@@ -120,6 +120,7 @@ public class PlayerController2 : NetworkBehaviour
 
     void Update()
     {
+
         if (Input.GetKeyDown(KeyCode.V))
             StabilizeBody();
         if (!isDead && IsOwner)
@@ -289,7 +290,7 @@ public class PlayerController2 : NetworkBehaviour
             hipsCj.angularXDrive = hipsInAirDrive;
             isGrounded = false;
             proceduralLegs.DisableIk();
-        
+            
         
       
             StartCoroutine(RespawnCoroutine(5f)); // Start the respawn coroutine

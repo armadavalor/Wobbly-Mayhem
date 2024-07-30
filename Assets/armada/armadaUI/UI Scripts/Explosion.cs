@@ -1,42 +1,48 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Explosion : MonoBehaviour
 {
-    public float explosionForce = 500f;
-    public float explosionRadius = 5f;
-    public ParticleSystem explosionEffect;
-    public float timeSlowDuration = 2f; // Duration of the slow motion effect
-    public float timeSlowScale = 0.1f; // Scale of the time slowdown
+    
+    public float timeSlowScale = 0.1f;
+    public float explosionRadius = 5f; // The radius within which the explosion affects objects
+    public float explosionForce = 700f; // The force of the explosion
+    public LayerMask explosionLayerMask; // Layer mask to filter which objects are affected
 
     void Start()
     {
-        // Play the explosion effect
-        ParticleSystem effect = Instantiate(explosionEffect, transform.position, transform.rotation);
-        effect.Play();
+        ApplyExplosionForce();
 
-        // Apply force to nearby objects
-        Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius);
-        foreach (Collider nearbyObject in colliders)
+
+
+        void ApplyExplosionForce()
         {
-            Rigidbody rb = nearbyObject.GetComponent<Rigidbody>();
-            if (rb != null)
+            // Find all colliders within the explosion radius
+            Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius, explosionLayerMask);
+
+            foreach (Collider nearbyObject in colliders)
             {
-                rb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
+                Rigidbody rb = nearbyObject.GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    // Apply the explosion force
+                    rb.AddExplosionForce(explosionForce, transform.position, explosionRadius, 1f, ForceMode.Impulse);
+                }
             }
+            Time.timeScale = timeSlowScale;
+            
+            
+
+
+
+
         }
-
-        // Start the time slowdown coroutine
-        StartCoroutine(SlowDownTime());
-
-      
     }
 
-    IEnumerator SlowDownTime()
+    private void OnDisable()
     {
-        Time.timeScale = timeSlowScale;
-        yield return new WaitForSecondsRealtime(timeSlowDuration);
         Time.timeScale = 1f;
     }
 }
