@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -1765564897439025350}
   - component: {fileID: 5040707030720879741}
   - component: {fileID: 8582323169930270309}
-  - component: {fileID: 1038932527622686307}
+  - component: {fileID: 4713929705441382904}
   m_Layer: 0
   m_Name: bulletImpactVFX
   m_TagString: Untagged
@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 2.5
---- !u!114 &1038932527622686307
+--- !u!114 &4713929705441382904
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
