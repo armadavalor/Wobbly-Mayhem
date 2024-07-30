@@ -14,7 +14,7 @@ public class NameInputHandler : MonoBehaviour
         joinButton.onClick.AddListener(OnJoinButtonClicked);
     }
 
-    private void OnJoinButtonClicked()
+    public void OnJoinButtonClicked()
     {
         if (!string.IsNullOrEmpty(nameInputField.text))
         {

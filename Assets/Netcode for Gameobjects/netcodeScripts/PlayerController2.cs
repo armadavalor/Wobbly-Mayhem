@@ -8,6 +8,10 @@ using Random = UnityEngine.Random;
 
 public class PlayerController2 : NetworkBehaviour
 {
+    
+    public string playerName;
+    public string PlayerName => playerName;
+    
     [SerializeField] Transform cam;
 
     [SerializeField] Transform leftFoot;
@@ -50,8 +54,12 @@ public class PlayerController2 : NetworkBehaviour
     private float predictedHealth;
     
     float horizontal, vertical;
-   
 
+    
+  
+
+    public int score = 0;
+    
     [SerializeField] ConfigurableJoint[] cjs;
     JointDrive[] jds;
     JointDrive inAirDrive;
@@ -77,6 +85,8 @@ public class PlayerController2 : NetworkBehaviour
     {
         if (IsOwner)
         {
+            
+            playerName = "Player" + OwnerClientId;
             InitializeComponents();
         }
     }
@@ -230,24 +240,24 @@ public class PlayerController2 : NetworkBehaviour
     
     
      [ServerRpc(RequireOwnership = false)]
-     private void ApplyDamageServerRpc(float damage)
+     private void ApplyDamageServerRpc(ulong killerId,float damage)
      {
          health -= damage;
          Debug.Log($"[Server] Damage applied: {damage}, Current health: {health}");
 
          if (health <= 0 && !isDead)
          {
-             DieServerRpc(true);
+             DieServerRpc(killerId,true);
          }
      }
 
     public float health = 100f;
 
-    public void ApplyDamage(float damage)
+    public void ApplyDamage(float damage,ulong killerId)
     {
         if (!IsServer)
         {
-            ApplyDamageServerRpc(damage); // Client requests server to apply damage
+            ApplyDamageServerRpc(killerId,damage); // Client requests server to apply damage
             return;
         }
 
@@ -256,16 +266,17 @@ public class PlayerController2 : NetworkBehaviour
 
         if (health <= 0 && !isDead)
         {
-            DieServerRpc(true);
+            DieServerRpc(killerId, true);
         }
     }
 
 
     [ServerRpc(RequireOwnership = false)]
-    public void DieServerRpc(bool respawn)
+    public void DieServerRpc(ulong killerId, bool respawn)
     {
         Debug.Log("Player has died.");
         isDead = true;
+        UpdateKillFeedClientRpc(killerId, NetworkObjectId);
         DieClientRpc(respawn);
 
         if (respawn)
@@ -313,6 +324,27 @@ public class PlayerController2 : NetworkBehaviour
             proceduralLegs.EnableIk();
             SetDrives();
         }
+    }
+    [ClientRpc]
+    public void UpdateKillFeedClientRpc(ulong killerId, ulong victimId)
+    {
+        PlayerController2 killer = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(killerId).GetComponent<PlayerController2>();
+        PlayerController2 victim = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(victimId).GetComponent<PlayerController2>();
+
+        KillFeedManager.Instance.AddKillFeedItem(killer.playerName, victim.playerName);
+        killer.IncreaseScore(); // Add method to increase score
+    }
+    public void IncreaseScore()
+    {
+        score += 1;
+        UpdateScoreClientRpc(score);
+
+    }
+    [ClientRpc]
+    public void UpdateScoreClientRpc(int newScore)
+    {
+        score = newScore;
+        // Update the score UI here
     }
     void DoubleJump()
     {

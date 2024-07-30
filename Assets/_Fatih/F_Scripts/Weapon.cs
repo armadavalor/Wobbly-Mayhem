@@ -9,7 +9,7 @@ public class Weapon : NetworkBehaviour
 {
     public enum WeaponType { Knife, Pistol, Rifle, GravityGun };
     public WeaponType weaponType;
-
+    public PlayerController2 playerController;
     Quaternion startRot;
 
     [SerializeField] LayerMask interactionLayer;
@@ -167,10 +167,11 @@ public class Weapon : NetworkBehaviour
             {
                 InstantiateHitEffectServerRpc(hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal));
                 DamageReceiver damageReceiver = hit.collider.GetComponent<DamageReceiver>();
+            
                 if (damageReceiver != null)
                 {
                     Debug.Log($"Hit player: {hit.collider.name}, applying damage: {Damage}");
-                    damageReceiver.ApplyDamage(Damage);
+                    damageReceiver.ApplyDamage(Damage, killerId: OwnerClientId);
                 }
                 else
                 {
@@ -252,7 +253,7 @@ public class Weapon : NetworkBehaviour
                 if (hit.collider.CompareTag("Player"))
                 {
                     InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
-                    hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage);
+                    hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage,killerId:OwnerClientId);
                 }
                 else
                 {
@@ -283,7 +284,7 @@ public class Weapon : NetworkBehaviour
                 if (hit.collider.CompareTag("Player"))
                 {
                     InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
-                    hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage);
+                    hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage,killerId:OwnerClientId);
                 }
                 else
                 {

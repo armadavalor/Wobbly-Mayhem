@@ -4,11 +4,11 @@ public class DamageReceiver : MonoBehaviour
 {
     public PlayerController2 playerController;
 
-    public void ApplyDamage(float damage)
+    public void ApplyDamage(float damage,ulong killerId)
     {
         if (playerController != null)
         {
-            playerController.ApplyDamage(damage);
+            playerController.ApplyDamage(damage, killerId);
         }
         else
         {
