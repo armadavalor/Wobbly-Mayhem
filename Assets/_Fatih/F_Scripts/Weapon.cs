@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Globalization;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.VFX;
@@ -23,9 +24,9 @@ public class Weapon : NetworkBehaviour
 
     [Header("General Specs")]
     [SerializeField] int Damage;
-    [SerializeField] int spareBullet;
-    [SerializeField] int magazineBullet;
-    [SerializeField] int _bullet;
+    public int spareBullet;
+    public int magazineBullet;
+    public int _bullet;
     [SerializeField] int currentRecoilIndex;
     [SerializeField] bool reloading;
     [SerializeField] bool playerShoots;
@@ -60,6 +61,8 @@ public class Weapon : NetworkBehaviour
     {
         if (IsOwner)
         {
+            playerCanShoot = weaponManager.canSwitchWeapon.Value;
+
             if (playerCanShoot)
             {
                 SwitchWeapon();
@@ -110,6 +113,9 @@ public class Weapon : NetworkBehaviour
 
     void SwitchWeapon()
     {
+        if (!IsOwner)
+            return;
+
         if (!playerShoots && !reloading)
         {
             switch (weaponType)
@@ -140,8 +146,6 @@ public class Weapon : NetworkBehaviour
             if (_bullet > 0)
             {
                 _bullet--;
-                muzzleVFX.Play();
-
                 FireServerRpc();
             }
 
@@ -190,29 +194,36 @@ public class Weapon : NetworkBehaviour
     [ServerRpc]
     void FireServerRpc()
     {
-        FireClientRpc();
+        if (IsServer)
+        {
+            FireClientRpc();
+        }
     }
 
     [ClientRpc]
     void FireClientRpc()
     {
-        if (weaponType == WeaponType.Rifle || weaponType == WeaponType.Pistol)
+        if (IsOwner)
         {
-            muzzleVFX.Play();
-            ShootRay();
-            movementWeapon.SlideMovement();
-        }
-        if (weaponType == WeaponType.GravityGun)
-        {
-            GravityGun();
-        }
-        if (weaponType == WeaponType.Knife)
-        {
-            KnifeAttacks();
+            if (weaponType == WeaponType.Rifle || weaponType == WeaponType.Pistol)
+            {
+                muzzleVFX.Play();
+                ShootRay();
+                movementWeapon.SlideMovement();
+            }
+            if (weaponType == WeaponType.GravityGun)
+            {
+                GravityGun();
+            }
+            if (weaponType == WeaponType.Knife)
+            {
+                KnifeAttacks();
+            }
         }
     }
 
-    
+
+
 
     [ServerRpc(RequireOwnership = false)]
     void InstantiateHitEffectServerRpc(Vector3 position, Quaternion rotation)
@@ -253,7 +264,20 @@ public class Weapon : NetworkBehaviour
                 if (hit.collider.CompareTag("Player"))
                 {
                     InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
-                    hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage,killerId:OwnerClientId);
+                    DamageReceiver damageReceiver = hit.collider.GetComponent<DamageReceiver>();
+
+                    if (damageReceiver != null)
+                    {
+                        Debug.Log($"Hit player: {hit.collider.name}, applying damage: {Damage}");
+                        damageReceiver.ApplyDamage(Damage, killerId: OwnerClientId);
+                    }
+                    else
+                    {
+                        Debug.LogError("DamageReceiver component not found on the hit object.");
+                    }
+
+                    // hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage,killerId:OwnerClientId);
+
                 }
                 else
                 {
@@ -284,7 +308,19 @@ public class Weapon : NetworkBehaviour
                 if (hit.collider.CompareTag("Player"))
                 {
                     InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
-                    hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage,killerId:OwnerClientId);
+                    DamageReceiver damageReceiver = hit.collider.GetComponent<DamageReceiver>();
+
+                    if (damageReceiver != null)
+                    {
+                        Debug.Log($"Hit player: {hit.collider.name}, applying damage: {Damage}");
+                        damageReceiver.ApplyDamage(Damage, killerId: OwnerClientId);
+                    }
+                    else
+                    {
+                        Debug.LogError("DamageReceiver component not found on the hit object.");
+                    }
+
+                   // hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage,killerId:OwnerClientId);
                 }
                 else
                 {
