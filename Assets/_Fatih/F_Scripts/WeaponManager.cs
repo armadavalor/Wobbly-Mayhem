@@ -161,7 +161,7 @@ public class WeaponManager : NetworkBehaviour
         canSwitchWeapon.Value = state;
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void SetCanSwitchWeaponServerRpc(bool state)
     {
         canSwitchWeapon.Value = state;
