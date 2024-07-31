@@ -4,10 +4,11 @@ using Unity.Netcode;
 public class CollectibleWeapon : NetworkBehaviour
 {
     [SerializeField] private bool isRifle;
+    private NetworkVariable<bool> isActive = new NetworkVariable<bool>(true);
 
     private void Update()
     {
-        if (gameObject.activeInHierarchy == true)
+        if (isActive.Value && gameObject.activeInHierarchy)
         {
             transform.Rotate(0f, 45f * Time.deltaTime, 0f);
         }
@@ -17,7 +18,6 @@ public class CollectibleWeapon : NetworkBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            // Sunucuda silah toplama iþlemini gerçekleþtir
             if (IsServer)
             {
                 HandleWeaponCollection(other.GetComponentInChildren<WeaponManager>(), isRifle);
@@ -34,14 +34,8 @@ public class CollectibleWeapon : NetworkBehaviour
     {
         if (weaponManager != null)
         {
-            // Silah koleksiyon iþlemini gerçekleþtir
             weaponManager.CollectWeapon(isRifle);
-
-            // Silahý sahneden kaldýr
-            gameObject.SetActive(false);
-
-            // Silahýn kaldýrýldýðýný tüm istemcilere bildir
-            NotifyClientsWeaponCollectedClientRpc();
+            SetWeaponActiveServerRpc(false);  // Sunucu tarafýnda aktifliði ayarla
         }
     }
 
@@ -56,11 +50,33 @@ public class CollectibleWeapon : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
-    private void NotifyClientsWeaponCollectedClientRpc()
+    [ServerRpc]
+    private void SetWeaponActiveServerRpc(bool active)
     {
-        // Silahýn kaldýrýldýðýný tüm istemcilere bildir
-        // Bu metod istemcilerin silahýn kaldýrýldýðýný görmesini saðlar
-        gameObject.SetActive(false);
+        isActive.Value = active; // Sunucu tarafýnda NetworkVariable'ý güncelle
+        NotifyClientsWeaponCollectedClientRpc(active); // Tüm istemcileri bilgilendir
+    }
+
+    [ClientRpc]
+    private void NotifyClientsWeaponCollectedClientRpc(bool active)
+    {
+        gameObject.SetActive(active);
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        gameObject.SetActive(isActive.Value);
+    }
+
+    private void OnDisable()
+    {
+        Invoke(nameof(ReenableWeaponServerRpc), 30f);
+    }
+
+    [ServerRpc]
+    private void ReenableWeaponServerRpc()
+    {
+        SetWeaponActiveServerRpc(true);
     }
 }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using static Weapon;
 
 public class WeaponManager : NetworkBehaviour
 {
@@ -66,6 +67,10 @@ public class WeaponManager : NetworkBehaviour
         if (canSwitchWeapon.Value && IsOwner)
         {
             SwitchWeapon();
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                ResetValue();
+            }
         }
     }
 
@@ -161,4 +166,73 @@ public class WeaponManager : NetworkBehaviour
     {
         canSwitchWeapon.Value = state;
     }
+
+    public void ResetValue()
+    {
+        if (!IsOwner)
+        {
+            Debug.Log("Not owner, cannot call ResetValue");
+            return;
+        }
+
+        if (IsServer)
+        {
+            ResetValuesOnServer();
+        }
+        else
+        {
+            ResetValuesServerRpc();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ResetValuesServerRpc(ServerRpcParams rpcParams = default)
+    {
+        if (NetworkManager.Singleton.IsServer)
+        {
+            ResetValuesOnServer();
+        }
+        else
+        {
+            Debug.LogError("Only the server can reset values");
+        }
+    }
+
+
+    private void ResetValuesOnServer()
+    {
+        foreach (var weapon in weapons)
+        {
+            if (weapon == null)
+            {
+                Debug.LogError("Weapon is null");
+                continue;
+            }
+
+            Weapon wp = weapon.GetComponent<Weapon>();
+            if (wp == null)
+            {
+                Debug.LogError("Weapon component is null");
+                continue;
+            }
+
+            wp._bullet = wp.magazineBullet;
+            wp.spareBullet = wp.magazineBullet * 3;
+
+            if (wp.weaponType == WeaponType.GravityGun)
+            {
+                haveGravityGun.Value = false;
+            }
+            if (wp.weaponType == WeaponType.Rifle)
+            {
+                haveRifle.Value = false;
+            }
+        }
+
+        InitializeWeapons();
+    }
+
+
+
+
 }
