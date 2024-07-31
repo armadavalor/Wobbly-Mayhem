@@ -171,7 +171,7 @@ public class Weapon : NetworkBehaviour
                 if (damageReceiver != null)
                 {
                     Debug.Log($"Hit player: {hit.collider.name}, applying damage: {Damage}");
-                    damageReceiver.ApplyDamage(Damage, killerId: OwnerClientId);
+                    damageReceiver.ApplyDamage(Damage, attackerId: OwnerClientId);
                 }
                 else
                 {
@@ -253,7 +253,7 @@ public class Weapon : NetworkBehaviour
                 if (hit.collider.CompareTag("Player"))
                 {
                     InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
-                    hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage,killerId:OwnerClientId);
+                    hit.collider.GetComponent<PlayerController2>().ApplyDamage(attackerId:OwnerClientId ,Damage);
                 }
                 else
                 {
@@ -284,7 +284,7 @@ public class Weapon : NetworkBehaviour
                 if (hit.collider.CompareTag("Player"))
                 {
                     InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
-                    hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage,killerId:OwnerClientId);
+                    hit.collider.GetComponent<PlayerController2>().ApplyDamage(attackerId:OwnerClientId,Damage);
                 }
                 else
                 {

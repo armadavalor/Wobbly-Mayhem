@@ -1,18 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
-using TMPro;
 
 public class KillFeedManager : MonoBehaviour
 {
     public static KillFeedManager Instance;
 
     public GameObject killFeedItemPrefab;
-    public Transform killFeedContent;
+    public Transform killFeedContainer;
 
-    private Queue<GameObject> killFeedItems = new Queue<GameObject>();
-
-    void Awake()
+    private void Awake()
     {
         if (Instance == null)
         {
@@ -24,15 +20,16 @@ public class KillFeedManager : MonoBehaviour
         }
     }
 
-    public void AddKillFeedItem(string killer, string victim)
+    public void AddKillFeedItem(string killerName, string victimName)
     {
-        GameObject item = Instantiate(killFeedItemPrefab, killFeedContent);
-        item.GetComponent<TextMeshProUGUI>().text = $"{killer} killed {victim}";
-        killFeedItems.Enqueue(item);
-
-        if (killFeedItems.Count > 10)
+        if (string.IsNullOrEmpty(killerName) || string.IsNullOrEmpty(victimName))
         {
-            Destroy(killFeedItems.Dequeue());
+            Debug.LogError("Killer or victim name is null or empty");
+            return;
         }
+
+        GameObject killFeedItem = Instantiate(killFeedItemPrefab, killFeedContainer);
+        killFeedItem.GetComponent<Text>().text = $"{killerName} killed {victimName}";
+        Destroy(killFeedItem, 5f); // Destroy after 5 seconds
     }
 }

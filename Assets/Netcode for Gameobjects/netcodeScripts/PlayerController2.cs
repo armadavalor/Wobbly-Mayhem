@@ -67,8 +67,16 @@ public class PlayerController2 : NetworkBehaviour
 
     [SerializeField] float airSpring;
 
+     
+    
+    
     public override void OnNetworkSpawn()
     {
+        if (IsServer)
+        {
+            playerName = $"Player {OwnerClientId}";
+            SetPlayerNameServerRpc($"Player {OwnerClientId}");
+        }
         if (!IsOwner)
         {
             enabled = false;
@@ -80,13 +88,18 @@ public class PlayerController2 : NetworkBehaviour
         transform.rotation = spawnPoint.rotation;
         InitializeComponents();
     }
+    [ServerRpc(RequireOwnership = false)]
+    public void SetPlayerNameServerRpc(string name)
+    {
+        playerName = name;
+    }
 
     private void Start()
     {
         if (IsOwner)
         {
-            
-            playerName = "Player" + OwnerClientId;
+
+            playerName = $"Player {OwnerClientId}";
             InitializeComponents();
         }
     }
@@ -253,11 +266,11 @@ public class PlayerController2 : NetworkBehaviour
 
     public float health = 100f;
 
-    public void ApplyDamage(float damage,ulong killerId)
+    public void ApplyDamage(ulong attackerId,float damage)
     {
         if (!IsServer)
         {
-            ApplyDamageServerRpc(killerId,damage); // Client requests server to apply damage
+            ApplyDamageServerRpc(attackerId,damage);
             return;
         }
 
@@ -266,17 +279,17 @@ public class PlayerController2 : NetworkBehaviour
 
         if (health <= 0 && !isDead)
         {
-            DieServerRpc(killerId, true);
+            DieServerRpc(attackerId, true);
         }
     }
 
 
     [ServerRpc(RequireOwnership = false)]
-    public void DieServerRpc(ulong killerId, bool respawn)
+    public void DieServerRpc(ulong attackerId, bool respawn)
     {
         Debug.Log("Player has died.");
         isDead = true;
-        UpdateKillFeedClientRpc(killerId, NetworkObjectId);
+        UpdateKillFeedServerRpc(attackerId, OwnerClientId);
         DieClientRpc(respawn);
 
         if (respawn)
@@ -325,14 +338,26 @@ public class PlayerController2 : NetworkBehaviour
             SetDrives();
         }
     }
-    [ClientRpc]
-    public void UpdateKillFeedClientRpc(ulong killerId, ulong victimId)
+    [ServerRpc(RequireOwnership = false)]
+    public void UpdateKillFeedServerRpc(ulong killerId, ulong victimId)
     {
-        PlayerController2 killer = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(killerId).GetComponent<PlayerController2>();
-        PlayerController2 victim = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(victimId).GetComponent<PlayerController2>();
+        string killerName = GetPlayerName(killerId);
+        string victimName = GetPlayerName(victimId);
+        
+        Debug.Log($"Killer: {killerName}, Victim: {victimName}");
+        KillFeedManager.Instance.AddKillFeedItem(killerName, victimName);
+    }
+    private string GetPlayerName(ulong playerId)
+    {
+        // Implement logic to retrieve player name based on playerId
+        // For example, you might have a dictionary that maps player IDs to names
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(playerId, out var client))
+        {
+            var playerController = client.PlayerObject.GetComponent<PlayerController2>();
+            return playerController != null ? playerController.playerName : "Unknown";
+        }
 
-        KillFeedManager.Instance.AddKillFeedItem(killer.playerName, victim.playerName);
-        killer.IncreaseScore(); // Add method to increase score
+        return "Unknown";
     }
     public void IncreaseScore()
     {

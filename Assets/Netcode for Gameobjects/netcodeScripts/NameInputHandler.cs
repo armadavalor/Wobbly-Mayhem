@@ -6,7 +6,7 @@ public class NameInputHandler : MonoBehaviour
 {
     [SerializeField] private TMP_InputField nameInputField;
     [SerializeField] private Button joinButton;
-
+    
     public static string PlayerName { get; private set; }
 
     private void Start()
