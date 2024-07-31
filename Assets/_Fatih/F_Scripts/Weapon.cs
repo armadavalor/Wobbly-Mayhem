@@ -175,7 +175,7 @@ public class Weapon : NetworkBehaviour
                 if (damageReceiver != null)
                 {
                     Debug.Log($"Hit player: {hit.collider.name}, applying damage: {Damage}");
-                    damageReceiver.ApplyDamage(Damage, killerId: OwnerClientId);
+                    damageReceiver.ApplyDamage(Damage, attackerId: OwnerClientId);
                 }
                 else
                 {
@@ -269,7 +269,7 @@ public class Weapon : NetworkBehaviour
                     if (damageReceiver != null)
                     {
                         Debug.Log($"Hit player: {hit.collider.name}, applying damage: {Damage}");
-                        damageReceiver.ApplyDamage(Damage, killerId: OwnerClientId);
+                        damageReceiver.ApplyDamage(Damage, attackerId: OwnerClientId);
                     }
                     else
                     {
@@ -313,7 +313,7 @@ public class Weapon : NetworkBehaviour
                     if (damageReceiver != null)
                     {
                         Debug.Log($"Hit player: {hit.collider.name}, applying damage: {Damage}");
-                        damageReceiver.ApplyDamage(Damage, killerId: OwnerClientId);
+                        damageReceiver.ApplyDamage(Damage, attackerId: OwnerClientId);
                     }
                     else
                     {
