@@ -227,6 +227,10 @@ public class WeaponManager : NetworkBehaviour
             {
                 haveRifle.Value = false;
             }
+            if (wp.weaponType == WeaponType.Knife)
+            {
+                wp.ResetKnifePosition();
+            }
         }
 
         InitializeWeapons();
