@@ -236,7 +236,4 @@ public class WeaponManager : NetworkBehaviour
         InitializeWeapons();
     }
 
-
-
-
 }
