@@ -20,6 +20,8 @@ public class Weapon : NetworkBehaviour
     [SerializeField] GameObject bulletImpactPrefab;
     [SerializeField] GameObject hitEffectPrefab;
     [SerializeField] GameObject magazineOnGun, leftHandMagazine;
+    [SerializeField] AudioSource weaponSound;
+    [SerializeField] AudioSource chargingSound;
     [SerializeField] Camera cam;
     [SerializeField] VisualEffect muzzleVFX;
     [SerializeField] Rigidbody headRb;
@@ -43,6 +45,7 @@ public class Weapon : NetworkBehaviour
     public WeaponManager weaponManager;
     public WeaponMovements movementWeapon;
 
+    bool chargingGG;
     private void OnEnable()
     {
         if (_bullet <= 0 && spareBullet > 0)
@@ -74,8 +77,8 @@ public class Weapon : NetworkBehaviour
             if (_bullet != magazineBullet && !reloading && spareBullet > 0 && (Input.GetKeyDown(KeyCode.R) || _bullet <= 0))
             {
                 reloading = true;
-                leftHandMagazine.SetActive(true);
-                magazineOnGun.AddComponent<Rigidbody>();
+              //  leftHandMagazine.SetActive(true);
+                magazineOnGun.SetActive(false);
                 Invoke(nameof(Reload), 1f);
             }
 
@@ -189,7 +192,7 @@ public class Weapon : NetworkBehaviour
         {
             if (weaponType == WeaponType.Rifle || weaponType == WeaponType.Pistol)
             {
-                muzzleVFX.Play();
+                muzzleVFX.Play(); weaponSound.Play();
                 ShootRay();
                 movementWeapon.SlideMovement();
             }
@@ -265,14 +268,23 @@ public class Weapon : NetworkBehaviour
                 }
             }
 
+            weaponSound.Play();
             movementWeapon.SlideMovement();
         }
 
         if (Input.GetMouseButton(1))
         {
+            
             gravityGunForce += 2.5f * Time.deltaTime;
             gravityGunForce = Mathf.Clamp(gravityGunForce, 0f, 5f);
             LaserBeam(true);
+            
+            if (!chargingGG)
+            {
+                chargingSound.Play();
+                chargingGG = true;
+            }
+
             movementWeapon.RotatePortal();
         }
         if (Input.GetMouseButtonUp(1) && gravityGunForce >= 2f)
@@ -311,6 +323,9 @@ public class Weapon : NetworkBehaviour
                 }
             }
 
+            chargingGG = false;
+            chargingSound.Stop();
+            weaponSound.Play();
             LaserBeam(false);
             gravityGunForce = 0f;
         }
