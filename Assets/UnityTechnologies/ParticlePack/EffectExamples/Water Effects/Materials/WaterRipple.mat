@@ -12,6 +12,9 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - _ALPHAPREMULTIPLY_ON
+  - _ALPHATEST_ON
+  - _DISTORTION_ON
   - _EMISSION
   - _NORMALMAP
   - _SURFACE_TYPE_TRANSPARENT
@@ -22,11 +25,13 @@ Material:
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap:
-    RenderType: Opaque
-  disabledShaderPasses: []
-  m_LockedProperties: 
+    RenderType: Transparent
+  disabledShaderPasses:
+  - DepthOnly
+  - SHADOWCASTER
+  m_LockedProperties: _ColorMode
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -72,7 +77,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaClip: 0
+    - _AlphaClip: 1
     - _AlphaToMask: 0
     - _Blend: 2
     - _BlendModePreserveSpecular: 1
@@ -83,14 +88,14 @@ Material:
     - _CameraNearFadeDistance: 1
     - _ColorMode: 0
     - _Cull: 2
-    - _Cutoff: 0.132
+    - _Cutoff: 0.061
     - _DetailNormalMapScale: 1
     - _DistortionBlend: 1
     - _DistortionEnabled: 1
     - _DistortionStrength: 3
     - _DistortionStrengthScaled: 0.3
-    - _DstBlend: 0
-    - _DstBlendAlpha: 0
+    - _DstBlend: 1
+    - _DstBlendAlpha: 1
     - _EmissionEnabled: 0
     - _FlipbookBlending: 0
     - _FlipbookMode: 0
@@ -114,14 +119,14 @@ Material:
     - _SrcBlendAlpha: 1
     - _Surface: 1
     - _UVSec: 0
-    - _ZWrite: 1
+    - _ZWrite: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
-    - _EmissionColor: {r: 0.20612317, g: 0.21626914, b: 0.2264151, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &4637601032262103926

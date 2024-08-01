@@ -12,7 +12,8 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _ALPHAPREMULTIPLY_ON
+  - _ALPHAMODULATE_ON
+  - _ALPHATEST_ON
   - _DISTORTION_ON
   - _EMISSION
   - _FADING_ON
@@ -79,9 +80,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaClip: 0
+    - _AlphaClip: 1
     - _AlphaToMask: 0
-    - _Blend: 2
+    - _Blend: 3
     - _BlendModePreserveSpecular: 1
     - _BlendOp: 0
     - _BumpScale: 1
@@ -90,13 +91,13 @@ Material:
     - _CameraNearFadeDistance: 1
     - _ColorMode: 0
     - _Cull: 0
-    - _Cutoff: 0.132
+    - _Cutoff: 0
     - _DetailNormalMapScale: 1
     - _DistortionBlend: 1
     - _DistortionEnabled: 1
     - _DistortionStrength: 1
     - _DistortionStrengthScaled: 0.1
-    - _DstBlend: 1
+    - _DstBlend: 0
     - _DstBlendAlpha: 1
     - _EmissionEnabled: 0
     - _FlipbookBlending: 1
@@ -105,20 +106,20 @@ Material:
     - _Glossiness: 0.9
     - _GlossyReflections: 1
     - _LightingEnabled: 1
-    - _Metallic: 1
+    - _Metallic: 0.548
     - _Mode: 4
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Smoothness: 0.9
+    - _Smoothness: 0.82
     - _SmoothnessTextureChannel: 0
     - _SoftParticlesEnabled: 1
     - _SoftParticlesFarFadeDistance: 0.1
     - _SoftParticlesNearFadeDistance: 0
     - _SpecularHighlights: 1
-    - _SrcBlend: 1
-    - _SrcBlendAlpha: 1
+    - _SrcBlend: 2
+    - _SrcBlendAlpha: 0
     - _Surface: 1
     - _UVSec: 0
     - _ZWrite: 0
@@ -128,7 +129,7 @@ Material:
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
-    - _EmissionColor: {r: 0.22792807, g: 0.24094428, b: 0.24528301, a: 1}
+    - _EmissionColor: {r: 0.8224902, g: 0.9006942, b: 0.9528302, a: 1}
     - _SoftParticleFadeParams: {r: 0, g: 10, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &2889286790238298693
