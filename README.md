@@ -45,8 +45,6 @@ Wobbly Mayhem ile arkadaşlarınıza karşı kaotik ve fizik tabanlı PvP düell
 <details>
   <summary><h1>Sprint 1</h2></summary>
 
-  # Sprint 1
-
 * Sprint Notları: Kapsamda netleştirilmiş olan maddeler user story'den alınacak parçalanmış ve product backlog oluşturulmuştur. Product backlog'tan görev alınarak Sprint başlatılmış ve iki hafta koşulmuştur.
 
 * Sprint içinde tamamlanması tahmin edilen puan: 80 Puan
