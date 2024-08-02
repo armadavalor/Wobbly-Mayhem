@@ -77,7 +77,7 @@ Wobbly Mayhem ile arkadaşlarınıza karşı kaotik ve fizik tabanlı PvP düell
 
 * Sprint Review:
   * Tasarlanan karakterler arasında oyunumuz için uygun olan karakter seçilmiş ve geliştirilmesi planlanmıştır, Oyun haritası ve UI tasarımları için ortak kararlılığa varılmıştır.
-  * Sprint Review katılımcıları: Tarık Köşker, Muhammed Fatih Aktaş, Özlem Deveci.
+  * Sprint Review katılımcıları: Tarık Köşker, Muhammet Fatih Aktaş, Özlem Deveci.
 * Sprint Retrospective:
   * Tasarım grubu için görev dağılımı yapılmıştır.
   * Sprint 2 için daha yoğun tempoda çalışma hedeflenmiştir.
@@ -113,7 +113,7 @@ Wobbly Mayhem ile arkadaşlarınıza karşı kaotik ve fizik tabanlı PvP düell
 * Sprint Review:
   * Aktif fizikler konusunda Inverse kinematics rotasına geçildi ve prosedürel animasyonlar ile devam edilecek, 
 Multiplayer'ın çekirdek implementasyonu kısmında hala alınan buglar var ilerleyen günlerde kod kısmında olan herkesin yoğunluğunu buraya vermesi gerek
-  * Sprint Review katılımcıları: Tarık Köşker, Muhammed Fatih Aktaş, Özlem Deveci.
+  * Sprint Review katılımcıları: Tarık Köşker, Muhammet Fatih Aktaş, Özlem Deveci.
 * Sprint Retrospective:
   * Takım içindeki görev dağılımıyla ilgili düzenleme yapılması kararı alınmıştır ve aktifliğin arttırılması hedeflenmiştir.
 
@@ -144,7 +144,10 @@ Multiplayer'ın çekirdek implementasyonu kısmında hala alınan buglar var ile
 
 * Sprint Review:
   * Oyunun tasarımları tamamlandı, belirli bir tarz ve renk paleti oluşturularak oyun bütünlüğü sağlandı.
-  * Sprint Review katılımcıları: Tarık Köşker, Muhammed Fatih Aktaş, Özlem Deveci.
+  * Oyuncuların kullanıcı adı girebilme özelliği ve can barı eklendi, silahların multiplayer bağlantıları yapıldı.
+  * Kamera bugları giderildi, animasyonlu bir ana menü tasarlandı ve settings menüsü oluşturuldu.
+  * Oyun sonunda kazananın gösterildiği ekran eklendi. Oyun müziği ve ses efektleeri eklendi.
+  * Sprint Review katılımcıları: Tarık Köşker, Muhammet Fatih Aktaş, Özlem Deveci.
 * Sprint Retrospective:
   * Sürecin başından itibaren hedeflenen tüm görevler yerine getirilmiş ve proje başarıyla tamamlanmıştır.
   * Ekip olarak sprintin bitişini kutladık ve oyunumuzu geliştirmek için yeni hedefler kurduk.
@@ -158,6 +161,7 @@ https://assetstore.unity.com/?q=fast%20ık&orderBy=1
  * https://assetstore.unity.com/packages/3d/environments/fantasy/eldorado-48092
  * https://assetstore.unity.com/packages/3d/fountain-prop-75912
  * https://assetstore.unity.com/packages/3d/props/simple-wooden-barrel-pack-18994
+ * https://assetstore.unity.com/packages/3d/props/guns/low-poly-fps-weapons-lite-245929
 
 </details>
  
