@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Globalization;
+using TMPro;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
@@ -11,13 +12,16 @@ public class Weapon : NetworkBehaviour
     public enum WeaponType { Knife, Pistol, Rifle, GravityGun };
     public WeaponType weaponType;
     public PlayerController2 playerController;
-    Quaternion startRot;
+
+    Vector3 startPosition;
 
     [SerializeField] LayerMask interactionLayer;
     [SerializeField] LayerMask playerHitLayer;
     [SerializeField] GameObject bulletImpactPrefab;
     [SerializeField] GameObject hitEffectPrefab;
     [SerializeField] GameObject magazineOnGun, leftHandMagazine;
+    [SerializeField] AudioSource weaponSound;
+    [SerializeField] AudioSource chargingSound;
     [SerializeField] Camera cam;
     [SerializeField] VisualEffect muzzleVFX;
     [SerializeField] Rigidbody headRb;
@@ -41,6 +45,7 @@ public class Weapon : NetworkBehaviour
     public WeaponManager weaponManager;
     public WeaponMovements movementWeapon;
 
+    bool chargingGG;
     private void OnEnable()
     {
         if (_bullet <= 0 && spareBullet > 0)
@@ -53,8 +58,8 @@ public class Weapon : NetworkBehaviour
     private void Awake()
     {
         magazineBullet = _bullet;
+        startPosition = transform.localPosition;
         movementWeapon = GetComponent<WeaponMovements>();
-        startRot = transform.localRotation;
     }
 
     private void Update()
@@ -72,7 +77,7 @@ public class Weapon : NetworkBehaviour
             if (_bullet != magazineBullet && !reloading && spareBullet > 0 && (Input.GetKeyDown(KeyCode.R) || _bullet <= 0))
             {
                 reloading = true;
-                leftHandMagazine.SetActive(true);
+              //  leftHandMagazine.SetActive(true);
                 magazineOnGun.SetActive(false);
                 Invoke(nameof(Reload), 1f);
             }
@@ -83,27 +88,6 @@ public class Weapon : NetworkBehaviour
             }
         }
     }
-
-        
-
-    //private void LateUpdate()
-    //{
-    //    if (IsOwner && Input.GetKey(KeyCode.Mouse0) && playerShoots && !reloading)
-    //    {
-    //        if (_bullet > 0)
-    //        {
-    //            Vector3 quaRot = new(0f, weaponManager.recoilVectorList[currentRecoilIndex].x * 1f,
-    //                weaponManager.recoilVectorList[currentRecoilIndex].y * -1f);
-    //            Quaternion spreadRotation = Quaternion.Euler(quaRot);
-
-    //            transform.localRotation = Quaternion.Slerp(transform.localRotation, transform.localRotation * spreadRotation, firingRate * 2);
-    //        }
-    //    }
-    //    else
-    //    {
-    //        transform.localRotation = Quaternion.Slerp(transform.localRotation, startRot, firingRate);
-    //    }
-    //}
 
     void RecoilLower()
     {
@@ -133,7 +117,8 @@ public class Weapon : NetworkBehaviour
                     break;
 
                 case WeaponType.Knife:
-                    FireServerRpc();
+                    if (Input.GetMouseButtonDown(0))
+                        KnifeAttacks();
                     break;
             }
         }
@@ -163,15 +148,15 @@ public class Weapon : NetworkBehaviour
 
         Vector3 spreadRay = forward + spreadBullet;
         if (currentRecoilIndex != 0) spreadRay.x += randomSpread.x;
-       
+
         RaycastHit hit;
         if (Physics.Raycast(cam.transform.position, spreadRay, out hit, fireDistance))
         {
             if (hit.collider.CompareTag("Player"))
             {
-                InstantiateHitEffectServerRpc(hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal));
+                InstantiateServerRpc(false, hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal));
                 DamageReceiver damageReceiver = hit.collider.GetComponent<DamageReceiver>();
-            
+
                 if (damageReceiver != null)
                 {
                     Debug.Log($"Hit player: {hit.collider.name}, applying damage: {Damage}");
@@ -184,10 +169,10 @@ public class Weapon : NetworkBehaviour
             }
             else
             {
-                InstantiateBulletImpactServerRpc(hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal));
+                InstantiateServerRpc(true, hit.point + spreadBullet + randomSpread, Quaternion.LookRotation(hit.normal));
             }
         }
-        
+
     }
 
 
@@ -207,7 +192,7 @@ public class Weapon : NetworkBehaviour
         {
             if (weaponType == WeaponType.Rifle || weaponType == WeaponType.Pistol)
             {
-                muzzleVFX.Play();
+                muzzleVFX.Play(); weaponSound.Play();
                 ShootRay();
                 movementWeapon.SlideMovement();
             }
@@ -222,29 +207,27 @@ public class Weapon : NetworkBehaviour
         }
     }
 
-
-
-
     [ServerRpc(RequireOwnership = false)]
-    void InstantiateHitEffectServerRpc(Vector3 position, Quaternion rotation)
+    public void InstantiateServerRpc(bool isBullet, Vector3 position, Quaternion rotation)
     {
-        InstantiateHitEffectClientRpc(position, rotation);
+        if (isBullet)
+        {
+            InstantiateBulletClientRpc(position, rotation);
+        }
+        else
+        {
+            InstantiateHitClientRpc(position, rotation);
+        }
     }
 
     [ClientRpc]
-    void InstantiateHitEffectClientRpc(Vector3 position, Quaternion rotation)
+    void InstantiateHitClientRpc(Vector3 position, Quaternion rotation)
     {
         Instantiate(hitEffectPrefab, position, rotation);
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    void InstantiateBulletImpactServerRpc(Vector3 position, Quaternion rotation)
-    {
-        InstantiateBulletImpactClientRpc(position, rotation);
-    }
-
     [ClientRpc]
-    void InstantiateBulletImpactClientRpc(Vector3 position, Quaternion rotation)
+    void InstantiateBulletClientRpc(Vector3 position, Quaternion rotation)
     {
         Instantiate(bulletImpactPrefab, position, rotation);
     }
@@ -263,7 +246,7 @@ public class Weapon : NetworkBehaviour
             {
                 if (hit.collider.CompareTag("Player"))
                 {
-                    InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
+                    InstantiateServerRpc(false, hit.point, Quaternion.LookRotation(hit.normal));
                     DamageReceiver damageReceiver = hit.collider.GetComponent<DamageReceiver>();
 
                     if (damageReceiver != null)
@@ -281,18 +264,27 @@ public class Weapon : NetworkBehaviour
                 }
                 else
                 {
-                    InstantiateBulletImpactServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
+                    InstantiateServerRpc(true, hit.point, Quaternion.LookRotation(hit.normal));
                 }
             }
 
+            weaponSound.Play();
             movementWeapon.SlideMovement();
         }
 
         if (Input.GetMouseButton(1))
         {
+            
             gravityGunForce += 2.5f * Time.deltaTime;
             gravityGunForce = Mathf.Clamp(gravityGunForce, 0f, 5f);
             LaserBeam(true);
+            
+            if (!chargingGG)
+            {
+                chargingSound.Play();
+                chargingGG = true;
+            }
+
             movementWeapon.RotatePortal();
         }
         if (Input.GetMouseButtonUp(1) && gravityGunForce >= 2f)
@@ -307,7 +299,7 @@ public class Weapon : NetworkBehaviour
             {
                 if (hit.collider.CompareTag("Player"))
                 {
-                    InstantiateHitEffectServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
+                    InstantiateServerRpc(false, hit.point, Quaternion.LookRotation(hit.normal));
                     DamageReceiver damageReceiver = hit.collider.GetComponent<DamageReceiver>();
 
                     if (damageReceiver != null)
@@ -320,17 +312,20 @@ public class Weapon : NetworkBehaviour
                         Debug.LogError("DamageReceiver component not found on the hit object.");
                     }
 
-                   // hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage,killerId:OwnerClientId);
+                    // hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage,killerId:OwnerClientId);
                 }
                 else
                 {
-                    InstantiateBulletImpactServerRpc(hit.point, Quaternion.LookRotation(hit.normal));
+                    InstantiateServerRpc(true, hit.point, Quaternion.LookRotation(hit.normal));
 
                     headRb.AddForce(Vector3.up * gravityGunForce * 10000f * Time.deltaTime, ForceMode.Impulse);
                     headRb.AddForce(direction * gravityGunForce * 5000f * Time.deltaTime, ForceMode.Impulse);
                 }
             }
 
+            chargingGG = false;
+            chargingSound.Stop();
+            weaponSound.Play();
             LaserBeam(false);
             gravityGunForce = 0f;
         }
@@ -366,13 +361,23 @@ public class Weapon : NetworkBehaviour
 
     void KnifeAttacks()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Rigidbody knifeRb = gameObject.AddComponent<Rigidbody>();
+        StartCoroutine(KnifeAttack());
+    }
 
-            knifeRb.AddForce(Vector3.forward * 10f * Time.deltaTime, ForceMode.Impulse);
-            Debug.Log("Knife attack executed");
+    IEnumerator KnifeAttack()
+    {
+        Vector3 targetPosition = new(0f, 5f, 0f);
+        while (Vector3.Distance(transform.localPosition, targetPosition) > 0.01f)
+        {
+            // Hedef konuma doðru hareket
+            transform.localPosition = Vector3.MoveTowards(transform.localPosition, targetPosition, 1f * Time.deltaTime);
+            yield return null;
         }
+    }
+
+    public void ResetKnifePosition()
+    {
+        transform.localPosition = startPosition;
     }
 
     public void Reload()
@@ -406,5 +411,35 @@ public class Weapon : NetworkBehaviour
         reloading = false;
         playerShoots = false;
         playerCanShoot = true;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (weaponType == WeaponType.Knife)
+        {
+            if (other.CompareTag("Player") && !IsOwner)
+            {
+                InstantiateServerRpc(false, other.transform.position, Quaternion.identity);
+                DamageReceiver damageReceiver = other.GetComponent<DamageReceiver>();
+
+                if (damageReceiver != null)
+                {
+                    Debug.Log($"Hit player: {other.name}, applying damage: {Damage}");
+                    damageReceiver.ApplyDamage(Damage, attackerId: OwnerClientId);
+                }
+                else
+                {
+                    Debug.LogError("DamageReceiver component not found on the hit object.");
+                }
+
+                gameObject.SetActive(false);
+                // hit.collider.GetComponent<PlayerController2>().ApplyDamage(Damage,killerId:OwnerClientId);
+            }
+            else
+            {
+                InstantiateServerRpc(true, other.transform.position, Quaternion.identity);
+                gameObject.SetActive(false);
+            }
+        }
     }
 }
