@@ -140,6 +140,8 @@ Multiplayer'ın çekirdek implementasyonu kısmında hala alınan buglar var ile
 <img width="780" alt="ui1" src="https://github.com/user-attachments/assets/ed8b93fa-68c4-405b-853e-d99323ae1a53">
 <img width="780" alt="ui2" src="https://github.com/user-attachments/assets/36aa2cda-1fd7-487d-8700-0e4d7a4c3862">
 <img width="780" alt="scene" src="https://github.com/user-attachments/assets/d1532192-9ab1-4855-a8f2-ed23e34543a1">
+<img width="1327" alt="game1" src="https://github.com/user-attachments/assets/88726b13-7d79-488a-90da-1cecf3c6d22d">
+<img width="1327" alt="game2" src="https://github.com/user-attachments/assets/c5eb0115-cf28-44b3-a51f-7e5827315f00">
 
 
 * Sprint Review:
