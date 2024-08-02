@@ -6,11 +6,11 @@
 
 
 ## Takım Üyeleri
-|          |          |          |
-|----------|----------|----------|
-| Tarık Köşker   | Developer   | Product Owner   |
-| Özlem Deveci   | Developer  | Scrum Master   |
-| Muhammet Fatih Aktaş   | Developer   |          |
+|          |          |          
+|----------|----------|
+| Tarık Köşker   | Product Owner   
+| Özlem Deveci   | Scrum Master   
+| Muhammet Fatih Aktaş   | Developer
 
 
 ## Oyun İsmi
