@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using Unity.Netcode;
 using TMPro;
@@ -33,7 +34,10 @@ public class GameMode : NetworkBehaviour
 
       Time.timeScale = 0.2f;
       EndGameUI.SetActive(true);
+      Cursor.lockState = CursorLockMode.None;
       _endGameAudioSource.Play();
+      
+      StartCoroutine(REstatGame());
     }
     else if (!workOneMoreTime)
       UpdateClientRpc(remainingTime);
@@ -74,7 +78,7 @@ public class GameMode : NetworkBehaviour
       if (player.ClientId == winnerPlayerID)
       {
         winner(player.ClientId);
-        WinnerText.text = player.ClientId.ToString();
+        WinnerText.text = "Oyuncu " + player.ClientId.ToString();
       }
         
     }
@@ -131,6 +135,13 @@ public class GameMode : NetworkBehaviour
   #endregion
 
 
+  private IEnumerator REstatGame()
+  {
+    yield return new WaitForSeconds(5f);
+
+    ReStartGameClientRpc();
+  }
+  
   [ContextMenu("ReStartGame__")]
   
   [ClientRpc]

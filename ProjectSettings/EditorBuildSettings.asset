@@ -11,7 +11,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Main Scenes/GoToMenu.unity
     guid: b48165b10d65cfc42a3ce9a26eb3ecda
-  - enabled: 1
-    path: Assets/Main Scenes/Test_RagDolls.unity
-    guid: 5f773ea780b50a2428718241249466e4
   m_configObjects: {}

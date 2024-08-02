@@ -8,6 +8,8 @@ public class GameManagerMP : MonoBehaviour
     
     [SerializeField] private NetworkManager networkManager;
 
+    
+    
     public void StartHost()
     {
         networkManager.StartHost();

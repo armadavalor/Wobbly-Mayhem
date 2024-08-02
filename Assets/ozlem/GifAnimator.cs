@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-public class GifAnimator : MonoBehaviour
+public class GifAnimator2 : MonoBehaviour
 {
     public Image image; // Unity UI Image component
     public float frameRate = 0.1f; // Time between frames
