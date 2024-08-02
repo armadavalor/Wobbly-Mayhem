@@ -42,6 +42,18 @@ Wobbly Mayhem ile arkadaşlarınıza karşı kaotik ve fizik tabanlı PvP düell
 * Rekabetçi oyuncular
 * Oyun yayıncıları ve izleyicileri
 
+## Nasıl Oynanır
+
+* WASD - Yürüme
+* Shift - Koşma 
+* Mouse Sol Tık - Ateş Etme
+* Mouse Orta Top - Grapple
+* 1234 - Silahlar Arası Geçiş
+* R - Yeniden Doldur
+* Boşluk Tuşu - Zıpla
+
+
+
 <details>
   <summary><h1>Sprint 1</h2></summary>
 
