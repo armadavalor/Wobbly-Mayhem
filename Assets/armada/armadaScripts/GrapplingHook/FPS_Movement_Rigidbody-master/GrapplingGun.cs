@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
-public class GrapplingGun : MonoBehaviour {
+public class GrapplingGun : NetworkBehaviour {
 
     private LineRenderer lr;
     private Vector3 grapplePoint;
@@ -13,17 +15,27 @@ public class GrapplingGun : MonoBehaviour {
     private SpringJoint joint;
     private Rigidbody playerRb;
     public float pullForce = 10f;
+    
 
+    
+    
     void Awake() {
         lr = GetComponent<LineRenderer>();
         playerRb = player.GetComponent<Rigidbody>();
     }
-
+    
     void Update() {
-        if (Input.GetMouseButtonDown(0)) {
+
+        
+        if (!IsOwner)
+        {
+            return;
+        }
+
+        if (Input.GetMouseButtonDown(2)) {
             StartGrapple();
         }
-        else if (Input.GetMouseButtonUp(0)) {
+        else if (Input.GetMouseButtonUp(2)) {
             StopGrapple();
         }
     }
@@ -34,11 +46,21 @@ public class GrapplingGun : MonoBehaviour {
         }
     }
 
-    void LateUpdate() {
+    void LateUpdate()
+    {
+        if (!IsOwner)
+        {
+            return;
+        }
         DrawRope();
+       
     }
 
+    
+   
+
     void StartGrapple() {
+        
         RaycastHit hit;
         if (Physics.Raycast(camera.position, camera.forward, out hit, maxDistance, whatIsGrappleable)) {
             grapplePoint = hit.point;
@@ -67,13 +89,18 @@ public class GrapplingGun : MonoBehaviour {
 
     private Vector3 currentGrapplePosition;
 
-    void DrawRope() {
+ 
+    void DrawRope()
+    {
+        
         if (!joint) return;
-
+        
         currentGrapplePosition = Vector3.Lerp(currentGrapplePosition, grapplePoint, Time.deltaTime * 8f);
         
         lr.SetPosition(0, gunTip.position);
         lr.SetPosition(1, currentGrapplePosition);
+       
+        
     }
 
     void ApplyPullForce() {
@@ -88,5 +115,11 @@ public class GrapplingGun : MonoBehaviour {
     public Vector3 GetGrapplePoint() {
         return grapplePoint;
     }
+
+    
+   
+    
+    
+    
 }
 

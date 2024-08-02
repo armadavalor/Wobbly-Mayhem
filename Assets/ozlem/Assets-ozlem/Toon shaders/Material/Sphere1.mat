@@ -24,14 +24,14 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: d3d32c1a63d6efb49917c39adf2f86f7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - Step1: 1
     - _Gloss: 10
-    - _OutlineWidth: 0.001
+    - _OutlineWidth: 0.0004
     - _RimPower: 2.2
     - _RimStep: 0.65
     - _RimStepSmooth: 0.54
@@ -45,7 +45,7 @@ Material:
     - _Step3: 0.97
     - _Step4: 0.025
     m_Colors:
-    - _BaseColor: {r: 0.8679245, g: 0.7840105, b: 0.5444998, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _HighColor: {r: 1, g: 0.41037738, b: 0.41037738, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _RimColor: {r: 0.4433962, g: 0.4433962, b: 0.4433962, a: 1}

@@ -19,6 +19,8 @@ public class RelayManager : MonoBehaviour
 
    
 
+   
+
     private async void Start ()
     { 
         await UnityServices.InitializeAsync();
@@ -37,7 +39,7 @@ public class RelayManager : MonoBehaviour
         await StartClientWithRelay(joinInput.text);
     }
 
-    private async Task<string> StartHostWithRelay( int maxConnections = 10)
+    private async Task<string> StartHostWithRelay( int maxConnections = 50)
     {
         
         

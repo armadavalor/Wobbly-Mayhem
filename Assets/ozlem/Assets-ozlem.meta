@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/_Fatih.meta
+guid: 446e2b64117f34b4faa80ffe5fe77b6c
+========
 guid: 23b107c4297a24915916637d8244a487
+>>>>>>>> origin/ozlem:Assets/ozlem/Assets-ozlem.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

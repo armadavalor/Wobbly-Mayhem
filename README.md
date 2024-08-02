@@ -6,20 +6,16 @@
 
 
 ## Takım Üyeleri
-|          |          |          
-|----------|----------|
-| Tarık Köşker   | Product Owner   
-| Özlem Deveci   | Scrum Master   
-| Muhammet Fatih Aktaş   | Developer
 
+* [Tarık Köşker - Developer, Product Owner]
+* [Özlem Deveci - Developer, Scrum Master] 
+* [Oğuzhan Yardımcı - Developer]
+* [Muhammet Fatih Aktaş - Developer] 
+* [Rabia Tuğçe Kurtuluş - Developer]
 
 ## Oyun İsmi
 
 WOBBLY MAYHEM
-
-![wmlogo](https://github.com/user-attachments/assets/4d2ef0b5-ad29-412d-ba74-3930c8767fec)
-
-
 
 ## Product Backlog URL
 
@@ -33,17 +29,17 @@ Wobbly Mayhem ile arkadaşlarınıza karşı kaotik ve fizik tabanlı PvP düell
 
 * 3D
 * Multiplayer
-* Fizik Tabanlı
 * Low Poly
-
+* Toon Shader
+* Fizik Tabanlı
 
 ## Hedef Kitle
 
 * Rekabetçi oyuncular
 * Oyun yayıncıları ve izleyicileri
+* Multiplayer oyun tutkunları
 
-<details>
-  <summary><h1>Sprint 1</h2></summary>
+# Sprint 1
 
 * Sprint Notları: Kapsamda netleştirilmiş olan maddeler user story'den alınacak parçalanmış ve product backlog oluşturulmuştur. Product backlog'tan görev alınarak Sprint başlatılmış ve iki hafta koşulmuştur.
 
@@ -54,11 +50,12 @@ Wobbly Mayhem ile arkadaşlarınıza karşı kaotik ve fizik tabanlı PvP düell
 * Backlog düzeni ve Story seçimleri: Genel başlıklar arasında karakter kontrolü, multiplayer mimarisi, silah ve oynanış, karakter tasarımı, harita tasarımı ve kullanıcı arayüzü bulunmaktadır. User story'ler daha küçük parçalara ayrılarak product backlog'un düzeni oluşturulmuştur. Bu küçük görevlere Fibonacci serisinden 1, 2, 3, 5, 8, 13 değerleri kullanılarak puan verilmiştir. Sprint 1 görevleri, user story maddelerinin bağımlılıklarına göre belirlenmiş ve çalışmalara başlanmıştır. Backlog yönetimi için Miro kullanılmıştır.
 
 * Daily Scrum:  Whatsapp ve Discord üzerinden görüşmeler sağlanmıştır.
-  * [Sprint 1 Daily Scrum](https://imgur.com/a/Mrjd0UQ)
+  * [Sprint1 Daily Scrum](https://imgur.com/a/Mrjd0UQ)
 
 * Sprint board update: Sprint board screenshotları:
 
-<img width="1043" alt="sprint1" src="https://github.com/OgyaDev/Unity42/assets/159573862/5f9d7c7a-88df-4a95-93ff-9ebe23e1253f">
+<img width="1043" alt="Ekran Resmi 2024-07-07 21 39 59" src="https://github.com/OgyaDev/Unity42/assets/159573862/3ca097cb-5510-4e5d-af4d-64e3e0ef7811">
+<img width="1043" alt="Ekran Resmi 2024-07-07 21 40 53" src="https://github.com/OgyaDev/Unity42/assets/159573862/5f9d7c7a-88df-4a95-93ff-9ebe23e1253f">
 
 
 * Ürün Durumu:
@@ -77,10 +74,8 @@ Wobbly Mayhem ile arkadaşlarınıza karşı kaotik ve fizik tabanlı PvP düell
   * Tasarım grubu için görev dağılımı yapılmıştır.
   * Sprint 2 için daha yoğun tempoda çalışma hedeflenmiştir.
 
-</details>
-
-<details>
-  <summary><h1>Sprint 2</h2></summary>
+ 
+# Sprint 2
 
 * Sprint Notları: Kalan süreç boyunca yapılacak görevleri gözden geçirdik ve bu sprintte oyunumuzun temel aşamalarını bitirmeyi hedefledik.
 
@@ -89,20 +84,21 @@ Wobbly Mayhem ile arkadaşlarınıza karşı kaotik ve fizik tabanlı PvP düell
 * Puan tamamlama mantığı: Proje boyunca tamamlanması gereken 240 puanlık bir backlog bulunmaktadır. Bu backlog, 3 sprint'e bölünerek her sprint için 80 puan hedeflenmiştir.
 
 * Daily Scrum:  Whatsapp ve Discord üzerinden görüşmelere devam edilmiştir.
-  * [Sprint 2 Daily Scrum](https://imgur.com/a/8WeYu53)
+  * [Sprint2 Daily Scrum](https://imgur.com/a/8WeYu53)
  
 * Sprint board update: Sprint board screenshotları:
 
-<img width="1163" alt="sprint2 2.1" src="https://github.com/user-attachments/assets/2c4a017b-2787-41e3-8b89-8963798ef5c5">
-<img width="1163" alt="sprint2 2.2" src="https://github.com/user-attachments/assets/43fb1071-0c14-49b1-b3a1-c18a53951a4b">
+<img width="1163" alt="sprint2 1" src="https://github.com/user-attachments/assets/2c4a017b-2787-41e3-8b89-8963798ef5c5">
+<img width="1163" alt="sprint2 2" src="https://github.com/user-attachments/assets/43fb1071-0c14-49b1-b3a1-c18a53951a4b">
 
 * Ürün Durumu:
 
 ![1](https://github.com/user-attachments/assets/55b8b434-d783-4cdd-a633-d69eb40b70d4)
 ![2](https://github.com/user-attachments/assets/fce8a437-006c-4ca4-8d98-27d85c8b900f)
 ![3](https://github.com/user-attachments/assets/c3f9f8df-185c-4b1a-bc7a-f65b1c188731)
-![chractercalisma](https://github.com/user-attachments/assets/833dabef-a0e0-4e19-bb59-99ec9d85f1f7)
-
+![0720_1_](https://github.com/user-attachments/assets/6ca45b95-f79e-4ad4-bd8f-d4ca7fa84036)
+<img width="1027" alt="charactermodel" src="https://github.com/user-attachments/assets/a7fca0cb-5059-420f-bc1a-f469b476080c">
+<img width="1027" alt="characterrig" src="https://github.com/user-attachments/assets/cf5ed550-baca-4b88-99e0-f4305c5f2bd5">
 
 * Sprint Review:
   * Aktif fizikler konusunda Inverse kinematics rotasına geçildi ve prosedürel animasyonlar ile devam edilecek, 
@@ -111,37 +107,5 @@ Multiplayer'ın çekirdek implementasyonu kısmında hala alınan buglar var ile
 * Sprint Retrospective:
   * Takım içindeki görev dağılımıyla ilgili düzenleme yapılması kararı alınmıştır ve aktifliğin arttırılması hedeflenmiştir.
 
-</details>
-
-<details>
-  <summary><h1>Sprint 3</h2></summary>
-
-* Sprint Notları: Projeden iki arkadaşımız ayrıldığı için kalan tüm görevler aramızda yeniden paylaştırılmıştır ve bu sprintte oyunun tamamlanması için daha fazla zaman ayırmak hedeflenmiştir.
-
-* Sprint içinde tamamlanması tahmin edilen puan: 80 Puan
-
-* Puan tamamlama mantığı: Proje boyunca tamamlanması gereken 240 puanlık bir backlog bulunmaktadır. Bu backlog, 3 sprint'e bölünerek her sprint için 80 puan hedeflenmiştir.
-
-* Daily Scrum:  Whatsapp ve Discord üzerinden görüşmelere devam edilmiştir.
-  * [Sprint 3 Daily Scrum](https://imgur.com/a/deqRREN)
- 
-* Sprint board update: Sprint board screenshotları:
-<img width="956" alt="sprint3" src="https://github.com/user-attachments/assets/92d8889e-7598-4207-8fee-1fb269c7e440">
-
-
-* Ürün Durumu:
-<img width="780" alt="ui1" src="https://github.com/user-attachments/assets/ed8b93fa-68c4-405b-853e-d99323ae1a53">
-<img width="780" alt="ui2" src="https://github.com/user-attachments/assets/36aa2cda-1fd7-487d-8700-0e4d7a4c3862">
-<img width="780" alt="scene" src="https://github.com/user-attachments/assets/d1532192-9ab1-4855-a8f2-ed23e34543a1">
-
-
-* Sprint Review:
-  * Oyunun tasarımları tamamlandı, belirli bir tarz ve renk paleti oluşturularak oyun bütünlüğü sağlandı.
-  * Sprint Review katılımcıları: Tarık Köşker, Muhammed Fatih Aktaş, Özlem Deveci.
-* Sprint Retrospective:
-  * Sürecin başından itibaren hedeflenen tüm görevler yerine getirilmiş ve proje başarıyla tamamlanmıştır.
-  * Ekip olarak sprintin bitişini kutladık ve oyunumuzu geliştirmek için yeni hedefler kurduk.
-
-</details>
 
 

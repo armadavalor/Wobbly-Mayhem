@@ -37,7 +37,7 @@ Material:
     - _MaskSoftnessX: 0
     - _MaskSoftnessY: 0
     - _OutlineSoftness: 0
-    - _OutlineWidth: 0.249
+    - _OutlineWidth: 0.172
     - _PerspectiveFilter: 0.875
     - _ScaleRatioA: 0.9
     - _ScaleRatioB: 1
@@ -83,8 +83,8 @@ MonoBehaviour:
   material: {fileID: 2180264}
   materialHashCode: 198912371
   m_Version: 1.1.0
-  m_SourceFontFileGUID: e3265ab4bf004d28a9537516768c1c75
-  m_SourceFontFile_EditorRef: {fileID: 12800000, guid: e3265ab4bf004d28a9537516768c1c75,
+  m_SourceFontFileGUID: 273ea7825e37f416392a7e91e4cfec9c
+  m_SourceFontFile_EditorRef: {fileID: 12800000, guid: 273ea7825e37f416392a7e91e4cfec9c,
     type: 3}
   m_SourceFontFile: {fileID: 0}
   m_AtlasPopulationMode: 0
@@ -4625,6 +4625,10 @@ MonoBehaviour:
   - m_ElementType: 1
     m_Unicode: 255
     m_GlyphIndex: 193
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 305
+    m_GlyphIndex: 106
     m_Scale: 1
   - m_ElementType: 1
     m_Unicode: 8192
