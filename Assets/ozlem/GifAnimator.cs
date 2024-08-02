@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
@@ -13,7 +14,7 @@ public class GifAnimator : MonoBehaviour
      private bool isWorking = true;
     private bool workOneMoreTime = false;
     private bool workOneMoreTimeUpdate = false;
-
+    public List<Sprite> _sprites;
 
     // public UnityEvent eventtt;
     public GameObject deActiveObject;
@@ -37,7 +38,8 @@ public class GifAnimator : MonoBehaviour
         frames = new Sprite[FotografSayısı];
         for (int i = 0; i < FotografSayısı; i++)
         {
-            frames[i] = Resources.Load<Sprite>($"wobblymayhemgif-{i} (sürüklenen)");
+            frames[i] = _sprites[i];
+            // frames[i] = Resources.Load<Sprite>($"wobblymayhemgif-{i} (sürüklenen)");
         }
 
         // Start the animation
