@@ -1,3 +1,6 @@
+![yt-kapak](https://github.com/user-attachments/assets/ae79836b-d003-4437-8334-7ed2e9b0138f)
+
+
 # Takım İsmi
 (U42)
 
