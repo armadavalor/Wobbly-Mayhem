@@ -152,6 +152,10 @@ Multiplayer'ın çekirdek implementasyonu kısmında hala alınan buglar var ile
 * Sprint Retrospective:
   * Sürecin başından itibaren hedeflenen tüm görevler yerine getirilmiş ve proje başarıyla tamamlanmıştır.
   * Ekip olarak sprintin bitişini kutladık ve oyunumuzu geliştirmek için yeni hedefler kurduk.
-
+ 
+* Kullanılan Assetler:
+ * https://assetstore.unity.com/packages/audio/music/orchestral/a-symphony-of-disarray-game-music-pack-217536
+https://assetstore.unity.com/?q=fast%20ık&orderBy=1
+ * 
 </details>
 
