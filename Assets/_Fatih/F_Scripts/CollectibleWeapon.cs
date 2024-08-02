@@ -24,7 +24,7 @@ public class CollectibleWeapon : NetworkBehaviour
             }
             else
             {
-                // Ýstemci tarafýndan sunucuya silah toplama isteði gönder
+                // ï¿½stemci tarafï¿½ndan sunucuya silah toplama isteï¿½i gï¿½nder
                 RequestWeaponCollectionServerRpc(isRifle);
             }
         }
@@ -35,14 +35,14 @@ public class CollectibleWeapon : NetworkBehaviour
         if (weaponManager != null)
         {
             weaponManager.CollectWeapon(isRifle);
-            SetWeaponActiveServerRpc(false);  // Sunucu tarafýnda aktifliði ayarla
+            SetWeaponActiveServerRpc(false);  // Sunucu tarafï¿½nda aktifliï¿½i ayarla
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void RequestWeaponCollectionServerRpc(bool isRifle, ServerRpcParams rpcParams = default)
     {
-        // Silah toplama iþlemini sunucu tarafýnda gerçekleþtir
+        // Silah toplama iï¿½lemini sunucu tarafï¿½nda gerï¿½ekleï¿½tir
         var weaponManager = NetworkManager.Singleton.ConnectedClients[rpcParams.Receive.SenderClientId].PlayerObject.GetComponentInChildren<WeaponManager>();
         if (weaponManager != null)
         {
@@ -53,8 +53,8 @@ public class CollectibleWeapon : NetworkBehaviour
     [ServerRpc]
     private void SetWeaponActiveServerRpc(bool active)
     {
-        isActive.Value = active; // Sunucu tarafýnda NetworkVariable'ý güncelle
-        NotifyClientsWeaponCollectedClientRpc(active); // Tüm istemcileri bilgilendir
+        isActive.Value = active; // Sunucu tarafï¿½nda NetworkVariable'ï¿½ gï¿½ncelle
+        NotifyClientsWeaponCollectedClientRpc(active); // Tï¿½m istemcileri bilgilendir
     }
 
     [ClientRpc]
@@ -74,7 +74,7 @@ public class CollectibleWeapon : NetworkBehaviour
         Invoke(nameof(ReenableWeaponServerRpc), 30f);
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     private void ReenableWeaponServerRpc()
     {
         SetWeaponActiveServerRpc(true);

@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,8 +29,29 @@ public class KillFeedManager : MonoBehaviour
             return;
         }
 
+        Debug.Log($"Adding kill feed item: {killerName} killed {victimName}");
+        if (killFeedItemPrefab == null)
+        {
+            Debug.LogError("killFeedItemPrefab is null");
+            return;
+        }
+
+        if (killFeedContainer == null)
+        {
+            Debug.LogError("killFeedContainer is null");
+            return;
+        }
+
         GameObject killFeedItem = Instantiate(killFeedItemPrefab, killFeedContainer);
-        killFeedItem.GetComponent<Text>().text = $"{killerName} killed {victimName}";
+        TextMeshProUGUI killFeedText = killFeedItem.GetComponent<TextMeshProUGUI>();
+        if (killFeedText == null)
+        {
+            Debug.LogError("killFeedItem does not have a Text component");
+            return;
+        }
+
+        killFeedText.text = $"{killerName} killed {victimName}";
         Destroy(killFeedItem, 5f); // Destroy after 5 seconds
     }
+
 }

@@ -15,7 +15,7 @@ public class SpawnManager : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject);
+           gameObject.SetActive(false);
         }
     }
     public Transform GetRandomSpawnPoint()

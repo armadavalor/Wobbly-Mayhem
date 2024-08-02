@@ -3,26 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
-using Cinemachine;
 using Random = UnityEngine.Random;
 
 public class PlayerController2 : NetworkBehaviour
 {
-    
-    public string playerName;
-    public string PlayerName => playerName;
+    public NetworkVariable<NetworkString> playerName = new NetworkVariable<NetworkString>("",NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public string PlayerName => playerName.Value;
+
+    private NetManager netManager;
     
     [SerializeField] Transform cam;
-
     [SerializeField] Transform leftFoot;
     [SerializeField] Transform rightFoot;
-
     [SerializeField] ProceduralLegsController proceduralLegs;
-
     [SerializeField] Rigidbody headRb;
-
     [SerializeField] float feetGroundCheckDist;
-
     [SerializeField] ConfigurableJoint hipsCj;
     [SerializeField] Rigidbody hipsRb;
 
@@ -49,15 +44,12 @@ public class PlayerController2 : NetworkBehaviour
 
     bool isGrounded;
     bool isDead = false;
-    public float maxHealth = 100f;
+    
+    [SerializeField] private HealthBar healthBar;
     private NetworkVariable<float> currentHealth = new NetworkVariable<float>(100f); 
     private float predictedHealth;
     
     float horizontal, vertical;
-
-    
-  
-
     public int score = 0;
     
     [SerializeField] ConfigurableJoint[] cjs;
@@ -67,40 +59,46 @@ public class PlayerController2 : NetworkBehaviour
 
     [SerializeField] float airSpring;
 
-     
     
-    
+   
+   
     public override void OnNetworkSpawn()
     {
-        if (IsServer)
+        
+        if (IsOwner)
         {
-            playerName = $"Player {OwnerClientId}";
-            SetPlayerNameServerRpc($"Player {OwnerClientId}");
+            playerName.Value = NameInputHandler.PlayerName;  // Ensure this is the correct way to get the player's name
         }
+
+        Debug.Log(NameInputHandler.PlayerName);
+       
+    
         if (!IsOwner)
         {
             enabled = false;
             return;
         }
+        
+        // Find the NetManager instance
+        netManager = FindObjectOfType<NetManager>();
+        
         // Set random spawn point
         Transform spawnPoint = SpawnManager.Instance.spawnPoints[Random.Range(0, SpawnManager.Instance.spawnPoints.Count)];
         transform.position = spawnPoint.position;
         transform.rotation = spawnPoint.rotation;
         InitializeComponents();
     }
-    [ServerRpc(RequireOwnership = false)]
-    public void SetPlayerNameServerRpc(string name)
-    {
-        playerName = name;
-    }
+
+    
+
 
     private void Start()
     {
         if (IsOwner)
         {
-
-            playerName = $"Player {OwnerClientId}";
+          //  playerName.Value = $"Player {OwnerClientId}";
             InitializeComponents();
+            healthBar = GetComponentInChildren<HealthBar>();
         }
     }
 
@@ -130,6 +128,27 @@ public class PlayerController2 : NetworkBehaviour
         }
 
         groundMask = LayerMask.GetMask("Ground");
+
+        currentHealth.OnValueChanged += OnHealthChanged;
+        playerName.OnValueChanged += OnPlayerNameChanged;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetHealthServerRpc(float health)
+    {
+        currentHealth.Value = health;
+    }
+    void OnHealthChanged(float oldValue, float newValue)
+    {
+        if (IsOwner && healthBar != null)
+        {
+            healthBar.UpdateHealthBar(newValue);
+        }
+    }
+
+    void OnPlayerNameChanged(NetworkString oldName, NetworkString newName)
+    {
+        // Handle any UI updates or other logic when the player name changes
     }
 
     void SetPlayerInputs()
@@ -143,7 +162,10 @@ public class PlayerController2 : NetworkBehaviour
 
     void Update()
     {
-
+        if (IsOwner && healthBar != null)
+        {
+            healthBar.UpdateHealthBar(currentHealth.Value);
+        }
         if (Input.GetKeyDown(KeyCode.V))
             StabilizeBody();
         if (!isDead && IsOwner)
@@ -157,7 +179,6 @@ public class PlayerController2 : NetworkBehaviour
             {
                 currentJumps = 0;
             }
-
         }
     }
 
@@ -209,7 +230,6 @@ public class PlayerController2 : NetworkBehaviour
         headRb.AddForce(Vector3.up * balanceForce);
         hipsRb.AddForce(Vector3.down * balanceForce);
 
-
         // Adjust speed if running
         if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.LeftShift))
         {
@@ -223,14 +243,12 @@ public class PlayerController2 : NetworkBehaviour
         }
     }
 
-
-
     void StabilizeBody()
     {
         headRb.AddForce(Vector3.up * balanceForce);
         hipsRb.AddForce(Vector3.down * balanceForce);
     }
-    
+
     void CheckGrounded()
     {
         bool leftCheck = false;
@@ -247,51 +265,56 @@ public class PlayerController2 : NetworkBehaviour
         {
             SetDrives();
         }
-
     }
 
-    
-    
-     [ServerRpc(RequireOwnership = false)]
-     private void ApplyDamageServerRpc(ulong killerId,float damage)
-     {
-         health -= damage;
-         Debug.Log($"[Server] Damage applied: {damage}, Current health: {health}");
+    [ServerRpc(RequireOwnership = false)]
+    private void ApplyDamageServerRpc(ulong killerId, float damage)
+    {
+        currentHealth.Value -= damage;
+        Debug.Log($"[Server] Damage applied: {damage}, Current health: {currentHealth.Value}");
 
-         if (health <= 0 && !isDead)
-         {
-             DieServerRpc(killerId,true);
-         }
-     }
+        if (currentHealth.Value <= 0 && !isDead)
+        {
+            DieServerRpc(killerId, true);
+        }
+    }
 
-    public float health = 100f;
-
-    public void ApplyDamage(ulong attackerId,float damage)
+    public void ApplyDamage(ulong attackerId, float damage)
     {
         if (!IsServer)
         {
-            ApplyDamageServerRpc(attackerId,damage);
+            ApplyDamageServerRpc(attackerId, damage);
             return;
         }
+        currentHealth.Value -= damage;
+       
+        Debug.Log($"Damage applied: {damage}, Current health: {currentHealth.Value}");
 
-        health -= damage;
-        Debug.Log($"Damage applied: {damage}, Current health: {health}");
-
-        if (health <= 0 && !isDead)
+        if (currentHealth.Value <= 0 && !isDead)
         {
             DieServerRpc(attackerId, true);
+            
         }
     }
 
-
     [ServerRpc(RequireOwnership = false)]
-    public void DieServerRpc(ulong attackerId, bool respawn)
+    private void DieServerRpc(ulong killerId, bool respawn)
     {
-        Debug.Log("Player has died.");
+        DieClientRpc(respawn:true);
         isDead = true;
-        UpdateKillFeedServerRpc(attackerId, OwnerClientId);
-        DieClientRpc(respawn);
+        foreach (ConfigurableJoint cj in cjs)
+        {
+            cj.angularXDrive = inAirDrive;
+            cj.angularYZDrive = inAirDrive;
+        }
 
+        hipsCj.angularYZDrive = hipsInAirDrive;
+        hipsCj.angularXDrive = hipsInAirDrive;
+        isGrounded = false;
+        proceduralLegs.DisableIk();
+
+        // Update kill feed and respawn if needed
+        UpdateKillFeedServerRpc(killerId ,OwnerClientId);
         if (respawn)
         {
             StartCoroutine(RespawnCoroutine(5f)); // Respawn after 5 seconds
@@ -303,8 +326,8 @@ public class PlayerController2 : NetworkBehaviour
     {
         if (respawn)
         {
-             isDead = true;
-             foreach (ConfigurableJoint cj in cjs)
+            isDead = true;
+            foreach (ConfigurableJoint cj in cjs)
             {
                 cj.angularXDrive = inAirDrive;
                 cj.angularYZDrive = inAirDrive;
@@ -314,66 +337,82 @@ public class PlayerController2 : NetworkBehaviour
             hipsCj.angularXDrive = hipsInAirDrive;
             isGrounded = false;
             proceduralLegs.DisableIk();
-            
-        
-      
+
             StartCoroutine(RespawnCoroutine(5f)); // Start the respawn coroutine
         }
-
     }
+
     private IEnumerator RespawnCoroutine(float respawnTime)
     {
         yield return new WaitForSeconds(respawnTime);
-        Transform spawnPoint = SpawnManager.Instance.spawnPoints[Random.Range(0, SpawnManager.Instance.spawnPoints.Count)];
-        
+        Transform spawnPoint = SpawnManager.Instance.GetRandomSpawnPoint();
+       
         if (spawnPoint)
         {
+            Debug.Log(spawnPoint.position);
             transform.position = spawnPoint.position;
             transform.rotation = spawnPoint.rotation;
+            
             // Reset player state here (health, position, etc.)
-            health = 100f;
+            SetHealthServerRpc(100f);
             isDead = false;
             isGrounded = true;
             proceduralLegs.EnableIk();
             SetDrives();
+            if (healthBar != null)
+                healthBar.UpdateHealthBar(currentHealth.Value);
         }
     }
+
+   
+
     [ServerRpc(RequireOwnership = false)]
     public void UpdateKillFeedServerRpc(ulong killerId, ulong victimId)
     {
-        string killerName = GetPlayerName(killerId);
-        string victimName = GetPlayerName(victimId);
-        
-        Debug.Log($"Killer: {killerName}, Victim: {victimName}");
-        KillFeedManager.Instance.AddKillFeedItem(killerName, victimName);
-    }
-    private string GetPlayerName(ulong playerId)
-    {
-        // Implement logic to retrieve player name based on playerId
-        // For example, you might have a dictionary that maps player IDs to names
-        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(playerId, out var client))
+        if (netManager == null)
         {
-            var playerController = client.PlayerObject.GetComponent<PlayerController2>();
-            return playerController != null ? playerController.playerName : "Unknown";
+            netManager = FindObjectOfType<NetManager>();
         }
 
-        return "Unknown";
+        string killerName = netManager.GetPlayerName(killerId);
+        string victimName = netManager.GetPlayerName(victimId);
+
+        Debug.Log($"Killer: {killerName}, Victim: {victimName}");
+        UpdateKillFeedClientRpc(killerName, victimName);
     }
+
+    [ClientRpc]
+    private void UpdateKillFeedClientRpc(string killerName, string victimName)
+    {
+        Debug.Log($"ClientRPC received: {killerName} killed {victimName}");
+        KillFeedManager.Instance.AddKillFeedItem(killerName, victimName);
+    }
+
+ //   private string GetPlayerName(ulong playerId)
+ //   {
+ //       if (NetworkManager.Singleton.ConnectedClients.TryGetValue(playerId, out var client))
+ //       {
+ //           var playerController = client.PlayerObject.GetComponent<PlayerController2>();
+ //           return playerController != null ? playerController.PlayerName : "Unknown";
+ //       }
+ //       return "Unknown";
+ //   }
+
     public void IncreaseScore()
     {
         score += 1;
         UpdateScoreClientRpc(score);
-
     }
+
     [ClientRpc]
     public void UpdateScoreClientRpc(int newScore)
     {
         score = newScore;
         // Update the score UI here
     }
+
     void DoubleJump()
     {
-        // Jump logic
         if (!isDead && Time.time - lastJumpTime >= jumpCoolDown && currentJumps < maxJumps &&
             Input.GetKeyDown(KeyCode.Space))
         {
@@ -382,7 +421,6 @@ public class PlayerController2 : NetworkBehaviour
 
             currentJumps++;
             lastJumpTime = Time.time;
-            // If maximum jumps reached, start cooldown
             if (currentJumps >= maxJumps)
             {
                 StartCoroutine(JumpCoolDownRoutine());
@@ -392,19 +430,23 @@ public class PlayerController2 : NetworkBehaviour
         IEnumerator JumpCoolDownRoutine()
         {
             yield return new WaitForSeconds(jumpCoolDown);
-            currentJumps = 0; // Reset jumps after cooldown
+            currentJumps = 0;
         }
     }
+
     void SetDrives()
     {
-        for (int i = 0; i < cjs.Length; i++)
+        if (IsOwner)
         {
-            cjs[i].angularXDrive = jds[i];
-            cjs[i].angularYZDrive = jds[i];
+            
+        
+            for (int i = 0; i < cjs.Length; i++)
+            {
+                cjs[i].angularXDrive = jds[i];
+                cjs[i].angularYZDrive = jds[i];
+            }
+            proceduralLegs.EnableIk();
+            isGrounded = true;
         }
-
-        proceduralLegs.EnableIk();
-        isGrounded = true;
     }
 }
-
