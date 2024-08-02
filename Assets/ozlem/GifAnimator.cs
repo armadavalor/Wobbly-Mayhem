@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using System.Collections.Generic;
 
 public class GifAnimator : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class GifAnimator : MonoBehaviour
     private bool workOneMoreTime = false;
     private bool workOneMoreTimeUpdate = false;
 
+   public  List<Sprite> sprites;
 
     // public UnityEvent eventtt;
     public GameObject deActiveObject;
@@ -33,11 +35,16 @@ public class GifAnimator : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("sadasd");
         // Load all sprites from ozlem/Resources folder
         frames = new Sprite[FotografSayısı];
         for (int i = 0; i < FotografSayısı; i++)
         {
-            frames[i] = Resources.Load<Sprite>($"wobblymayhemgif-{i} (sürüklenen)");
+            frames[i] = sprites[i];
+            //frames[i] = Resources.Load<Sprite>($"wobblymayhemgif-{i} (sürüklenen)");
+
+             //Debug.Log(Resources.Load<Sprite>($"wobblymayhemgif-{i} (sürüklenen)"));
+       
         }
 
         // Start the animation
@@ -53,7 +60,7 @@ public class GifAnimator : MonoBehaviour
         while (isWorking)
         {
 
-            if(index >= 58 && !workOneMoreTime)
+            if(index >= 56 && !workOneMoreTime)
             {
                 // burda ilk başladıgında durdugu yer
                 workOneMoreTime = true;
