@@ -1,5 +1,5 @@
 # Takım İsmi
-(U42)
+(U42) 
 
 ![teamlogo](https://github.com/user-attachments/assets/5591722d-2f49-4dda-afa2-7a4d42ae842a)
 
@@ -39,7 +39,24 @@ Wobbly Mayhem ile arkadaşlarınıza karşı kaotik ve fizik tabanlı PvP düell
 * Oyun yayıncıları ve izleyicileri
 * Multiplayer oyun tutkunları
 
+<<<<<<< HEAD
 # Sprint 1
+=======
+## Nasıl Oynanır
+
+* WASD - Yürüme
+* Shift - Koşma 
+* Mouse Sol Tık - Ateş Etme
+* Mouse Orta Top - Grapple
+* 1234 - Silahlar Arası Geçiş
+* R - Yeniden Doldur
+* Boşluk Tuşu - Zıpla
+
+
+
+<details>
+  <summary><h1>Sprint 1</h2></summary>
+>>>>>>> e2221ded066221c7169609b93b26cbebe42f2dac
 
 * Sprint Notları: Kapsamda netleştirilmiş olan maddeler user story'den alınacak parçalanmış ve product backlog oluşturulmuştur. Product backlog'tan görev alınarak Sprint başlatılmış ve iki hafta koşulmuştur.
 
