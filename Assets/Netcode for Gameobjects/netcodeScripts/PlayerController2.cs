@@ -10,6 +10,12 @@ public class PlayerController2 : NetworkBehaviour
     public NetworkVariable<NetworkString> playerName = new NetworkVariable<NetworkString>("",NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public string PlayerName => playerName.Value;
 
+    public bool playerMoved = false;
+    public int footStepsIndex = 0;
+    public float footStepSpeed;
+    public AudioSource[] footStepsSFX;
+    public AudioSource JumpSFX;
+    
     private NetManager netManager;
     
     [SerializeField] Transform cam;
@@ -46,7 +52,7 @@ public class PlayerController2 : NetworkBehaviour
     bool isDead = false;
     
     [SerializeField] private HealthBar healthBar;
-    private NetworkVariable<float> currentHealth = new NetworkVariable<float>(100f); 
+    public NetworkVariable<float> currentHealth = new NetworkVariable<float>(100f,NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server); 
     private float predictedHealth;
     
     float horizontal, vertical;
@@ -59,12 +65,21 @@ public class PlayerController2 : NetworkBehaviour
 
     [SerializeField] float airSpring;
 
-    
+    private void OnEnable()
+    {
+       
+    }
    
    
     public override void OnNetworkSpawn()
     {
-        
+        GameMode.Instance.OnGameEnd += () =>
+        {
+            if (IsOwner)
+            {
+                currentHealth.Value = 100f;
+            }
+        };
         if (IsOwner)
         {
             playerName.Value = NameInputHandler.PlayerName;  // Ensure this is the correct way to get the player's name
@@ -164,6 +179,7 @@ public class PlayerController2 : NetworkBehaviour
     {
         if (IsOwner && healthBar != null)
         {
+            
             healthBar.UpdateHealthBar(currentHealth.Value);
         }
         if (Input.GetKeyDown(KeyCode.V))
@@ -177,6 +193,7 @@ public class PlayerController2 : NetworkBehaviour
             DoubleJump();
             if (isGrounded)
             {
+                FootStep();
                 currentJumps = 0;
             }
         }
@@ -322,7 +339,7 @@ public class PlayerController2 : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void DieClientRpc(bool respawn)
+    public void DieClientRpc(bool respawn)
     {
         if (respawn)
         {
@@ -373,7 +390,7 @@ public class PlayerController2 : NetworkBehaviour
         {
             netManager = FindObjectOfType<NetManager>();
         }
-
+        netManager._playerStatesList[killerId].score += 10;
         string killerName = netManager.GetPlayerName(killerId);
         string victimName = netManager.GetPlayerName(victimId);
 
@@ -418,7 +435,7 @@ public class PlayerController2 : NetworkBehaviour
         {
             hipsRb.AddForce(jumpForce * Vector3.up, ForceMode.Impulse);
             hipsRb.AddTorque(new Vector3(750, 0));
-
+            JumpSFX.Play();
             currentJumps++;
             lastJumpTime = Time.time;
             if (currentJumps >= maxJumps)
@@ -433,6 +450,38 @@ public class PlayerController2 : NetworkBehaviour
             currentJumps = 0;
         }
     }
+    
+    void PlayerMovementBool()
+    {
+        playerMoved = false;
+    }
+    void FootStep()
+    {
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            footStepSpeed = .375f;
+        }
+        else
+        {
+            footStepSpeed = .65f;
+        }
+
+        if ((horizontal != 0 || vertical != 0) && !playerMoved && isGrounded)
+        {
+            footStepsSFX[footStepsIndex].Play();
+            playerMoved = true;
+            Invoke(nameof(PlayerMovementBool), footStepSpeed);
+
+            footStepsIndex++;
+            if (footStepsIndex > 1)
+            {
+                footStepsIndex = 0;
+            }
+        }
+
+    }
+   
+    
 
     void SetDrives()
     {

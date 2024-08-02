@@ -1,50 +1,169 @@
+using System;
 using UnityEngine;
 using Unity.Netcode;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameMode : NetworkBehaviour
 {
-    public float remainingTime = 60f;
-    public TextMeshProUGUI timeText;
+  public float remainingTime = 60f;
+  public TextMeshProUGUI timeText;
 
-    private void Update()
+  private bool workOneMoreTime = false;
+
+
+  [SerializeField] private GameObject EndGameUI;
+  [SerializeField] private AudioSource _endGameAudioSource;
+
+  [SerializeField] private NetManager _netManager;
+  public Action OnGameEnd;
+  private void Update()
+  {
+    if (!IsServer) return;
+
+    remainingTime -= Time.deltaTime;
+
+    if (remainingTime <= 0f && !workOneMoreTime)
     {
-        if (!IsServer) return;
+      EndGameOnClientRpc();
+      remainingTime = 0f; // Zamanï¿½ sï¿½fï¿½rlayï¿½n
+      UpdateClientRpc(remainingTime); // Zamanï¿½n sï¿½fï¿½rlandï¿½ï¿½ï¿½nï¿½ istemcilere bildirin
+      workOneMoreTime = true;
+      WhoIsTheWinner();
 
-        remainingTime -= Time.deltaTime;
+      Time.timeScale = 0.2f;
+      EndGameUI.SetActive(true);
+      _endGameAudioSource.Play();
+    }
+    else if (!workOneMoreTime)
+      UpdateClientRpc(remainingTime);
+  }
 
-        if (remainingTime <= 0f)
-        {
-            EndGameOnClientRpc();
-            remainingTime = 0f; // Zamaný sýfýrlayýn
-            UpdateClientRpc(remainingTime); // Zamanýn sýfýrlandýðýný istemcilere bildirin
-        }
-        else
-        {
-            UpdateClientRpc(remainingTime);
-        }
+  [ClientRpc]
+  private void UpdateClientRpc(float newTime)
+  {
+    if (timeText != null)
+    {
+      timeText.text = $"{Mathf.FloorToInt(newTime / 60)}:{(newTime % 60).ToString("00")}";
+
+    }
+  }
+
+  [ClientRpc]
+  private void EndGameOnClientRpc()
+  {
+    Debug.Log("Client: Oyun Bitti!");
+  }
+
+  [SerializeField] public TextMeshProUGUI WinnerText;
+  private void WhoIsTheWinner()
+  {
+    var otherPlayer = _netManager._playerStatesList[0];
+
+    var winnerPlayerID = _netManager._playerStatesList[0].ClientId;
+    foreach (var player in _netManager._playerStatesList)
+    {
+      if (player.score > otherPlayer.score)
+        winnerPlayerID = player.ClientId;
+
+      otherPlayer = player;
     }
 
-    // Bu ClientRpc istemcilere zaman güncellemelerini iletmek için kullanýlýr
-    [ClientRpc]
-    private void UpdateClientRpc(float newTime)
+    foreach (var player in _netManager._playerStatesList)
     {
-        // Ýstemcilerde zamanýn güncellenmesi
-        if (timeText != null)
+      if (player.ClientId == winnerPlayerID)
+      {
+        winner(player.ClientId);
+        WinnerText.text = player.ClientId.ToString();
+      }
+        
+    }
+  }
+
+  private void winner(ulong clientID)
+  {
+    _netManager._playerStatesList[clientID].isThisWinner = true;
+  }
+
+  // [ContextMenu("ReStartGame")]
+// [ClientRpc]
+// public void ReStartGameClientRpc()
+// {
+//  // NetworkManager.Singleton.SceneManager.LoadScene("UI_MainMenu", LoadSceneMode.Single);
+//   
+//  currentHealth = 100f;
+//  ("Wobbly Mayhem");
+//  Cursor.lockState = CursorLockMode.None;
+//  NetworkManager.Singleton.Shutdown();
+// }
+  #region Instance
+  private static GameMode _instance;
+
+  public static GameMode Instance
+  {
+    get
+    {
+      if (_instance == null)
+      {
+        _instance = FindObjectOfType<GameMode>();
+
+        if (_instance == null)
         {
-            timeText.text = $"{Mathf.FloorToInt(newTime / 60)}:{(newTime % 60).ToString("00")}";
-            Debug.Log("Client güncellendi: " + newTime);
+          GameObject singletonObject = new GameObject("SingletonExample");
+          _instance = singletonObject.AddComponent<GameMode>();
         }
-    }
+      }
 
-    [ClientRpc]
-    private void EndGameOnClientRpc()
+      return _instance;
+    }
+  }
+
+  private void Awake()
+  {
+    if (_instance == null)
     {
-        // Ýstemcilerde oyun bittiðinde yapýlacak iþlemler
-        Debug.Log("Client: Oyun Bitti!");
-
-        // Burada ayrýca, oyun bitimiyle ilgili diðer iþlemleri de yapabilirsiniz
-        // Örneðin, oyun sahnesini deðiþtirmek, bir sonuç ekraný göstermek, vb.
+      _instance = this;
+      DontDestroyOnLoad(gameObject);
     }
+    else
+      Destroy(gameObject);
+  }
+  #endregion
+
+
+  [ContextMenu("ReStartGame__")]
+  
+  [ClientRpc]
+  public void ReStartGameClientRpc()
+  {
+    OnGameEnd.Invoke();
+    SetDefaultySo();
+  }
+
+  public void SetDefaultySo()
+  {
+    for (int i = 0; i < NetManager.Instance._playerStatesList.Length; i++)
+    {
+
+      SetDefaulty(i,
+        0,
+        false
+        );
+
+
+      if (NetManager.Instance._playerStatesList[i].playerObject == null)
+        return;
+    }
+  }
+
+  private void SetDefaulty(int i,
+    int score,
+    bool isThisWinner
+   
+  )
+  {
+    NetManager.Instance._playerStatesList[i].score = score;
+    NetManager.Instance._playerStatesList[i].isThisWinner = isThisWinner;
+  }
 
 }

@@ -199,7 +199,7 @@ public class WeaponManager : NetworkBehaviour
     }
 
 
-    private void ResetValuesOnServer()
+    public void ResetValuesOnServer()
     {
         foreach (var weapon in weapons)
         {

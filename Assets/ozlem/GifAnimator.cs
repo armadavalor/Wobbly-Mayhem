@@ -64,7 +64,7 @@ public class GifAnimator : MonoBehaviour
             }
 
             image.sprite = frames[index];
-            Debug.Log(frames[index]);
+            //Debug.Log(frames[index]);
             index = (index + 1) % frames.Length;
 
             if(index >= 74 && workOneMoreTime)

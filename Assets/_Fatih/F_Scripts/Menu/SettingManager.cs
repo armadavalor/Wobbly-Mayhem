@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SettingManager : MonoBehaviour
@@ -75,5 +76,10 @@ public class SettingManager : MonoBehaviour
         PlayerPrefs.SetFloat("SFX", value);
 
         foreach (var sfx in gameSfxs) { sfx.volume = value; }
+    }
+
+    public void RestartScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
