@@ -4,7 +4,7 @@ public class DamageReceiver : MonoBehaviour
 {
     public PlayerController2 playerController;
 
-    public void ApplyDamage(float damage,ulong attackerId,ulong victimId)
+    public void ApplyDamage(float damage,ulong attackerId)
     {
         if (playerController != null)
         {
