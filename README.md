@@ -155,8 +155,9 @@ https://assetstore.unity.com/?q=fast%20ık&orderBy=1
  * https://assetstore.unity.com/packages/tools/modeling/ragdoll-helper-49288
  * https://github.com/VeriorPies/ParrelSync
  * https://assetstore.unity.com/packages/vfx/particles/particle-pack-127325
-</details>
  * https://assetstore.unity.com/packages/3d/environments/fantasy/eldorado-48092
  * https://assetstore.unity.com/packages/3d/fountain-prop-75912
  * https://assetstore.unity.com/packages/3d/props/simple-wooden-barrel-pack-18994
 
+</details>
+ 
