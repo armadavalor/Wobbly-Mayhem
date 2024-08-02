@@ -50,8 +50,6 @@ Wobbly Mayhem ile arkadaşlarınıza karşı kaotik ve fizik tabanlı PvP düell
 <details>
   <summary><h1>Sprint 1</h2></summary>
 
-  # Sprint 1
-
 * Sprint Notları: Kapsamda netleştirilmiş olan maddeler user story'den alınacak parçalanmış ve product backlog oluşturulmuştur. Product backlog'tan görev alınarak Sprint başlatılmış ve iki hafta koşulmuştur.
 
 * Sprint içinde tamamlanması tahmin edilen puan: 80 Puan
@@ -89,7 +87,6 @@ Wobbly Mayhem ile arkadaşlarınıza karşı kaotik ve fizik tabanlı PvP düell
 <details>
   <summary><h1>Sprint 2</h2></summary>
   
-  # Sprint 2
 
 * Sprint Notları: Kalan süreç boyunca yapılacak görevleri gözden geçirdik ve bu sprintte oyunumuzun temel aşamalarını bitirmeyi hedefledik.
 
@@ -125,7 +122,6 @@ Multiplayer'ın çekirdek implementasyonu kısmında hala alınan buglar var ile
 <details>
   <summary><h1>Sprint 3</h2></summary>
   
-  # Sprint 3
 
 * Sprint Notları: Projeden iki arkadaşımız ayrıldığı için kalan tüm görevler aramızda yeniden paylaştırılmıştır ve bu sprintte oyunun tamamlanması için daha fazla zaman ayırmak hedeflenmiştir.
 
@@ -156,6 +152,8 @@ Multiplayer'ın çekirdek implementasyonu kısmında hala alınan buglar var ile
 * Kullanılan Assetler:
  * https://assetstore.unity.com/packages/audio/music/orchestral/a-symphony-of-disarray-game-music-pack-217536
 https://assetstore.unity.com/?q=fast%20ık&orderBy=1
- * 
+ * https://assetstore.unity.com/packages/tools/modeling/ragdoll-helper-49288
+ * https://github.com/VeriorPies/ParrelSync
+ * https://assetstore.unity.com/packages/vfx/particles/particle-pack-127325
 </details>
 
